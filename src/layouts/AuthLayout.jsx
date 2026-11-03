@@ -1,4 +1,3 @@
-// src/layouts/AuthLayout.jsx
 import { Outlet } from "react-router";
 import { Moon, Sun } from "lucide-react";
 import useTheme from "../hooks/useTheme";

@@ -1,9 +1,9 @@
 package com.example.psa.controller;
 
-import com.example.psa.dto.LoginRequest;
-import com.example.psa.dto.RegisterRequest;
-import com.example.psa.dto.LoginResponse;
-import com.example.psa.dto.RegisterResponse;
+import com.example.psa.dto.Request.LoginRequest;
+import com.example.psa.dto.Request.RegisterRequest;
+import com.example.psa.dto.Response.LoginResponse;
+import com.example.psa.dto.Response.RegisterResponse;
 import com.example.psa.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,3 @@
-// src/components/styles.js
 export const inputClass =
   "w-full rounded-lg border border-zinc-300 bg-white/70 px-3 py-2.5 text-zinc-900 " + 
   "placeholder:text-zinc-500 outline-none transition " +

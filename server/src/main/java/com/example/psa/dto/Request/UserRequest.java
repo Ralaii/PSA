@@ -1,4 +1,4 @@
-package com.example.psa.dto;
+package com.example.psa.dto.Request;
 
 import com.example.psa.entity.Role;
 

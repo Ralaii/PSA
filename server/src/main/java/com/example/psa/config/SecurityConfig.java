@@ -4,6 +4,7 @@ import com.example.psa.security.JwtFilter;
 import com.example.psa.security.RateLimitFilter;
 import com.example.psa.security.RestAccessDeniedHandler;
 import com.example.psa.security.RestAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -24,18 +26,6 @@ public class SecurityConfig {
     private final CorsConfigurationSource corsConfigurationSource;
     private final RestAuthenticationEntryPoint authenticationEntryPoint;
     private final RestAccessDeniedHandler accessDeniedHandler;
-
-    public SecurityConfig(JwtFilter jwtFilter,
-                          RateLimitFilter rateLimitFilter,
-                          CorsConfigurationSource corsConfigurationSource,
-                          RestAuthenticationEntryPoint authenticationEntryPoint,
-                          RestAccessDeniedHandler accessDeniedHandler) {
-        this.jwtFilter = jwtFilter;
-        this.rateLimitFilter = rateLimitFilter;
-        this.corsConfigurationSource = corsConfigurationSource;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-        this.accessDeniedHandler = accessDeniedHandler;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

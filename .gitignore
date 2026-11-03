@@ -28,6 +28,9 @@ dist-ssr
 .env.*
 !.env.example
 
+# BACKUP FILE LOCAL
+src/components/SidebarRelative.jsx
+
 # Spring Boot
 server/src/main/resources/application-local.properties
 server/src/main/resources/application-prod.properties

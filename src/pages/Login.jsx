@@ -82,12 +82,14 @@ function Login() {
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <Link
+          <p
             to="/forgot-password"
-            className="mt-2 block text-right text-sm text-blue-600 hover:underline dark:text-blue-400"
+            className="mt-2 block text-right text-sm"
           >
-            Forgot password?
-          </Link>
+            <Link to="/forgot-password" className=" text-blue-600 hover:underline dark:text-blue-400">
+              Forgot password?
+            </Link>
+          </p>
         </div>
 
         {error && (
