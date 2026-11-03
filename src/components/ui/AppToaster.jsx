@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { Toaster } from "sonner"
+import { useEffect, useState } from "react";
+import { Toaster } from "sonner";
 
 export function AppToaster() {
   const [theme, setTheme] = useState(() =>

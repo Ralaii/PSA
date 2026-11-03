@@ -11,7 +11,7 @@ function useAuth() {
   onSuccess: (data) => {
     localStorage.setItem("token", data.token);
     toast.success(`Welcome back! ${data.username}`);
-    navigate("/dashboard");
+    void navigate("/dashboard");
   },
   onError: (error) => {
     toast.error(error.message);
