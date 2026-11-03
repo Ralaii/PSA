@@ -39,9 +39,15 @@ VITE_USE_MOCKS=true
 ```
 
 - `VITE_API_URL` - Base URL of the backend API
-- `VITE_USE_MOCKS` - `true` uses a fake in-memory API (MSW) so the app runs without a backend. Set it to `false` to use the real backend. (Backend is currently in making)
+- `VITE_USE_MOCKS` - `true` uses a fake in-memory API (MSW) so the app runs without a backend. Set it to `false` to use the real backend.
 
 Restart the dev server after changing the `.env` file. The production environment (`.env.prod`) is still in progress.
+
+## Developing Without a Backend
+
+You don't need the backend to work on the frontend. Keep `VITE_USE_MOCKS=true` in your `.env`, then add a new file for your mock data in `src/mocks/data`, next to `notifications.js`.
+e.g.
+`userSetting.js` for Fake API Call and Shaping
 
 ## Notes
 
