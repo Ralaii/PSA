@@ -8,12 +8,17 @@ const linkClass = ({ isActive }) =>
       : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
   }`;
 
-function SidebarLinks({ collapsed }) {
+function SidebarLinks({ collapsed, onNavigate }) {
   return (
     <ul className="space-y-1">
       {sidebarItems.map(({ to, label, icon: Icon }) => (
         <li key={to}>
-          <NavLink to={to} title={collapsed ? label : undefined} className={linkClass}>
+          <NavLink
+            to={to}
+            onClick={onNavigate}
+            title={collapsed ? label : undefined}
+            className={linkClass}
+          >
             <span className="flex size-6 shrink-0 items-center justify-center text-xl">
               <Icon />
             </span>

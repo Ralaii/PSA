@@ -7,37 +7,44 @@ import SidebarLinks from "./SidebarLinks";
 const HOVER_QUERY = "(hover: hover) and (min-width: 768px)";
 const canHoverExpand = () => window.matchMedia(HOVER_QUERY).matches;
 
-function Sidebar({ collapsed, setCollapsed }) {
+function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMobile }) {
   const [hovered, setHovered] = useState(false);
-  const expanded = !collapsed || hovered;
+
+  // The phone drawer is always full width, whatever the desktop state is
+  const rail = collapsed && !mobileOpen;
+  const expanded = !rail || hovered;
 
   const handleToggle = () => {
-    setCollapsed((prev) => !prev);
-    setHovered(false); // closes right away when you collapse by click
+    if (mobileOpen) onCloseMobile(); // inside the drawer, the button closes it
+    else setCollapsed((prev) => !prev);
+    setHovered(false);
   };
 
   return (
-    // Spacer: the width the page layout actually sees.
-    // w-20 must match the 5rem in MainLayout's phone width calc.
-    <div
-      className={`relative h-screen shrink-0 transition-[width] duration-300 ease-in-out ${
-        collapsed ? "w-20" : "w-64"
-      }`}
-    >
+    <>
+      {/* Spacer: the width the page layout sees on md+. Phones have none. */}
+      <div
+        className={`hidden h-screen shrink-0 transition-[width] duration-300 ease-in-out md:block ${
+          collapsed ? "w-20" : "w-64"
+        }`}
+      />
+
       <aside
         onMouseEnter={() => canHoverExpand() && setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className={`absolute inset-y-0 left-0 z-20 flex flex-col overflow-hidden border-r border-zinc-300 bg-zinc-200 p-3 transition-[width,box-shadow] duration-300 ease-in-out dark:border-zinc-700 dark:bg-zinc-900 ${
-          expanded ? "w-64" : "w-20"
-        } ${collapsed && hovered ? "shadow-xl" : ""}`}
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-hidden border-r border-zinc-300 bg-zinc-200 p-3 transition-[width,box-shadow,transform] duration-300 ease-in-out md:translate-x-0 dark:border-zinc-700 dark:bg-zinc-900 ${
+          expanded ? "md:w-64" : "md:w-20"
+        } ${mobileOpen ? "translate-x-0 shadow-xl" : "-translate-x-full"} ${
+          rail && hovered ? "shadow-xl" : ""
+        }`}
       >
         <div className="relative mb-6 flex items-center">
           <button
             onClick={handleToggle}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={rail ? "Expand sidebar" : "Collapse sidebar"}
             className="ml-[10px] shrink-0 cursor-pointer rounded-lg p-2 text-xl text-zinc-900 transition hover:bg-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-800"
           >
-            {collapsed ? <GoSidebarExpand /> : <GoSidebarCollapse />}
+            {rail ? <GoSidebarExpand /> : <GoSidebarCollapse />}
           </button>
 
           <img
@@ -49,9 +56,9 @@ function Sidebar({ collapsed, setCollapsed }) {
           />
         </div>
 
-        <SidebarLinks collapsed={!expanded} />
+        <SidebarLinks collapsed={!expanded} onNavigate={onCloseMobile} />
       </aside>
-    </div>
+    </>
   );
 }
 
