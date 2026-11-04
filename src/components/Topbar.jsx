@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router";
 import { BsSearch } from "react-icons/bs";
-import { Moon, Sun } from "lucide-react";
+import { Menu, Moon, Sun } from "lucide-react";
 import { sidebarItems } from "./sidebarItems";
 import NotificationDropdown from "./inbox/NotificationDropdown";
 import useTheme from "../hooks/useTheme";
@@ -9,7 +9,7 @@ import useTheme from "../hooks/useTheme";
 const iconBtn =
   "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-900 transition hover:bg-zinc-300 dark:text-zinc-100 dark:hover:bg-zinc-800";
 
-function Topbar() {
+function Topbar({ onMenuClick }) {
   const { pathname } = useLocation();
   const current = sidebarItems.find((link) => pathname.startsWith(link.to));
   const title = current?.label ?? "";
@@ -21,9 +21,19 @@ function Topbar() {
       <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
 
         {/* Title: shrinks and truncates instead of pushing things off-screen */}
-        <h1 className="min-w-0 truncate text-lg font-semibold sm:text-xl">
-          {title}
-        </h1>
+        <div className="flex min-w-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={onMenuClick}
+            aria-label="Open menu"
+            className={`${iconBtn} md:hidden`}
+          >
+            <Menu size={20} />
+          </button>
+
+          {/* Title: shrinks and truncates instead of pushing things off-screen */}
+          <h1 className="min-w-0 truncate text-lg font-semibold sm:text-xl">{title}</h1>
+        </div>
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-3">
           {/* Search input: md and up */}
