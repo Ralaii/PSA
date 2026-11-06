@@ -1,5 +1,6 @@
 package com.example.psa.entity;
 
+import com.example.psa.enums.DocumentType;
 import jakarta.persistence.*;
 import lombok.Data;
 

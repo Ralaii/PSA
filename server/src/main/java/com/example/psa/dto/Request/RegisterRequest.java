@@ -1,13 +1,16 @@
 package com.example.psa.dto.Request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
         @NotBlank(message = "First Name required")
+        @JsonProperty(value = "first_name")
         String firstName,
 
         @NotBlank(message = "Last Name required")
+        @JsonProperty(value = "last_name")
         String lastName,
 
         @NotBlank(message = "Username required")

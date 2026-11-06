@@ -1,5 +1,7 @@
 package com.example.psa.entity;
 
+import com.example.psa.enums.EmploymentStatus;
+import com.example.psa.enums.EmploymentType;
 import jakarta.persistence.*;
 import lombok.Data;
 

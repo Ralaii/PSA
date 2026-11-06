@@ -3,9 +3,14 @@ package com.example.psa.service;
 import com.example.psa.dto.Request.LoginRequest;
 import com.example.psa.dto.Request.RegisterRequest;
 import com.example.psa.dto.Response.LoginResponse;
+import com.example.psa.dto.Response.LoginResult;
 import com.example.psa.dto.Response.RegisterResponse;
-import com.example.psa.entity.Role;
+import com.example.psa.entity.UserSession;
+import com.example.psa.enums.AccountStatus;
+import com.example.psa.enums.Role;
 import com.example.psa.entity.AppUser;
+import com.example.psa.exception.AccountNotActiveException;
+import com.example.psa.repository.SessionRepository;
 import com.example.psa.repository.UserRepository;
 import com.example.psa.security.JwtUtil;
 import jakarta.validation.Valid;
@@ -17,6 +22,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
@@ -27,6 +34,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final SessionRepository sessionRepository;
 
     public RegisterResponse register(@Valid RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
@@ -43,35 +51,39 @@ public class AuthService {
         return new RegisterResponse(appUser.getUsername());
     }
 
-//    public LoginResponse login(@Valid LoginRequest request) {
-//        User user = userRepository.findByUsername(request.username())
-//                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
-//
-//        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-//            throw new RuntimeException("Invalid credentials");
-//        }
-//
-//        String token = jwtUtil.generateToken(user.getUsername());
-//        return new LoginResponse(token, user.getUsername(), user.getRole().name());
-//    }
-    public LoginResponse login(LoginRequest request) {
+    public LoginResult login(LoginRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.username(),
                             request.password()
-                    ));
+                    )
+            );
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new BadCredentialsException("Invalid username and password");
         }
 
-        AppUser appUser = userRepository.findByUsername(request.username())
-                .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
-        String loginToken = jwtUtil.generateToken(appUser.getUsername());
-        return new LoginResponse(
-                loginToken,
-                appUser.getUsername(),
-                appUser.getRole()
+        AppUser user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new BadCredentialsException("Invalid username"));
+
+        if (user.getStatus() != AccountStatus.ACTIVE) {
+            throw new AccountNotActiveException(user.getStatus());
+        }
+
+        UserSession session = new UserSession();
+        session.setUser(user);
+        session.setExpiresAt(Instant.now().plus(Duration.ofDays(3)));
+        sessionRepository.save(session);
+
+        String jwt = jwtUtil.generateToken(
+                user.getId(),
+                session.getId(),
+                user.getUsername(),
+                user.getRole()
+        );
+        return new LoginResult(
+                jwt,
+                new LoginResponse(user.getUsername(), user.getRole())
         );
     }
 }

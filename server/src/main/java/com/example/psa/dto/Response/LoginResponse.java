@@ -1,9 +1,8 @@
 package com.example.psa.dto.Response;
 
-import com.example.psa.entity.Role;
+import com.example.psa.enums.Role;
 
 public record LoginResponse(
-        String token,
         String username,
         Role role
 ) {}

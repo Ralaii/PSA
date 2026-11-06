@@ -15,7 +15,6 @@ public class PasswordConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Spring wires CustomUserDetailsService + PasswordEncoder into this automatically.
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

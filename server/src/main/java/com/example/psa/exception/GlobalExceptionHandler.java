@@ -21,4 +21,28 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(apiErrorResponse);
     }
+
+    @ExceptionHandler(AccountNotActiveException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccountNotActive(AccountNotActiveException ex) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                403,
+                "Forbidden",
+                ex.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(apiErrorResponse);
+    }
+
+    @ExceptionHandler(UsernameTakenException.class)
+    public ResponseEntity<ApiErrorResponse> handleUsernameTakenException(UsernameTakenException ex) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                409,
+                "Email taken",
+                ex.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(apiErrorResponse);
+    }
 }
