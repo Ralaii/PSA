@@ -10,7 +10,7 @@ import { useInboxActions } from "../hooks/useInboxActions";
 function InboxDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { search } = useLocation(); // carries ?tab=...&type=... through every navigation
+  const { search } = useLocation();
 
   const { data: notification, isLoading, isError } = useNotification(id);
   const { position, total, newer, older } = useInboxNeighbors(id);
