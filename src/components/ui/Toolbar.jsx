@@ -16,7 +16,7 @@ export function ToolButton({ icon, label, ...props }) {
 
 export function Toolbar({ left, right }) {
   return (
-    <div className="sticky -top-3 z-10 -mx-3 -mt-3 flex h-16 items-center justify-between gap-2 border-b border-zinc-200 bg-zinc-100 px-3 sm:-top-6 sm:-mx-6 sm:-mt-6 sm:px-6 dark:border-zinc-700 dark:bg-zinc-900">
+    <div className="sticky z-10 flex h-16 items-center justify-between gap-2 bg-zinc-100 px-3 sm:-top-6 sm:-mx-6 sm:-mt-6 sm:px-6 dark:border-zinc-700 dark:bg-zinc-900">
       <div className="flex items-center gap-2">{left}</div>
       <div className="flex items-center gap-1">{right}</div>
     </div>

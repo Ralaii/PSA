@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import { Moon, Sun } from "lucide-react";
-import useTheme from "../hooks/useTheme";
-import loginPhoto from "../assets/pylon2022.jpg";
+import useTheme from "../../hooks/useTheme";
+import loginPhoto from "../../assets/pylon2022.jpg";
 
 export default function AuthLayout() {
   const { isDark, toggleTheme } = useTheme();

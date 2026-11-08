@@ -6,7 +6,6 @@ import com.example.psa.dto.Response.LoginResponse;
 import com.example.psa.dto.Response.LoginResult;
 import com.example.psa.dto.Response.RegisterResponse;
 import com.example.psa.security.AuthCookieFactory;
-import com.example.psa.security.JwtUtil;
 import com.example.psa.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final AuthCookieFactory cookieFactory;
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {

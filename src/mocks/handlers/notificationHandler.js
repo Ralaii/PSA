@@ -1,11 +1,11 @@
 import { http, HttpResponse, delay } from "msw";
-import { notifications as seed } from "./notifications";
+import { notifications as seed } from "../data/notifications";
 
 const API = import.meta.env.VITE_API_URL ?? "/api";
 
 let db = structuredClone(seed);
 
-export const handlers = [
+export const notificationHandler = [
   // ---- Read ----
   http.get(`${API}/notifications`, async () => {
     await delay(300);
@@ -68,4 +68,22 @@ export const handlers = [
     db = db.filter((n) => !set.has(n.id));
     return HttpResponse.json({ deleted: before - db.length });
   }),
+
+  // --- QUERY SEARCH ---
+  http.get(`${API}/notifications`, async ({ request }) => {
+  await delay(300);
+  const url = new URL(request.url);
+  const q = url.searchParams.get("q")?.trim().toLowerCase();
+  const limit = Number(url.searchParams.get("limit")) || undefined;
+
+  let result = db;
+  if (q) {
+    result = db.filter((n) =>
+      `${n.title} ${n.text}`.toLowerCase().includes(q)
+    );
+  }
+  if (limit) result = result.slice(0, limit);
+
+  return HttpResponse.json(result);
+}),
 ];

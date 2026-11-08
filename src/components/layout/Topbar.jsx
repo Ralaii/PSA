@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useLocation } from "react-router";
 import { BsSearch } from "react-icons/bs";
 import { Menu, Moon, Sun } from "lucide-react";
-import { sidebarItems } from "./sidebarItems";
-import NotificationDropdown from "./inbox/NotificationDropdown";
-import useTheme from "../hooks/useTheme";
+import { sidebarItems } from "../sidebar/sidebarItems";
+import NotificationDropdown from "../inbox/NotificationDropdown";
+import TopbarSearchInput from "../search/TopbarSearchInput";
+import useTheme from "../../hooks/useTheme";
+import { useTopbarSearch } from "../../hooks/search/useTopbarSearch";
 
 const iconBtn =
   "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-900 transition hover:bg-zinc-300 dark:text-zinc-100 dark:hover:bg-zinc-800";
@@ -15,12 +17,12 @@ function Topbar({ onMenuClick }) {
   const title = current?.label ?? "";
   const { isDark, toggleTheme } = useTheme();
   const [searchOpen, setSearchOpen] = useState(false);
+  const search = useTopbarSearch();
 
   return (
     <header className="shrink-0 border-b border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900">
       <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
 
-        {/* Title: shrinks and truncates instead of pushing things off-screen */}
         <div className="flex min-w-0 items-center gap-2">
           <button
             type="button"
@@ -37,14 +39,11 @@ function Topbar({ onMenuClick }) {
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-3">
           {/* Search input: md and up */}
-          <div className="relative hidden md:block">
-            <BsSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-44 rounded-lg border border-zinc-300 bg-zinc-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-500 lg:w-64 dark:border-zinc-700 dark:bg-zinc-800"
-            />
-          </div>
+          <TopbarSearchInput
+            search={search}
+            className="hidden md:block"
+            inputClassName="w-44 rounded-lg border border-zinc-300 bg-zinc-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-60 lg:w-64 dark:border-zinc-700 dark:bg-zinc-800"
+          />
 
           {/* Search icon: below md, toggles the search row */}
           <button
@@ -83,15 +82,11 @@ function Topbar({ onMenuClick }) {
       {/* Mobile search row */}
       {searchOpen && (
         <div className="border-t border-zinc-200 px-4 py-3 md:hidden dark:border-zinc-700">
-          <div className="relative">
-            <BsSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
-            <input
-              type="text"
-              placeholder="Search"
-              autoFocus
-              className="w-full rounded-lg border border-zinc-300 bg-zinc-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-500 dark:border-zinc-700 dark:bg-zinc-800"
-            />
-          </div>
+          <TopbarSearchInput
+            search={search}
+            autoFocus
+            inputClassName="w-full rounded-lg border border-zinc-300 bg-zinc-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-800"
+          />
         </div>
       )}
     </header>

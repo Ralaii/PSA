@@ -1,14 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
-import PsaLogo from "../assets/imgs/PsaLogo.webp";
-import SidebarLinks from "./SidebarLinks";
+import PsaLogo from "../../assets/imgs/PsaLogo.webp";
+import SidebarLinks from "../sidebar/SidebarLinks";
+import { useSettings } from "../../context/SettingContext";
 
 // Hover-expand only on devices that can hover and are wider than a phone
 const HOVER_QUERY = "(hover: hover) and (min-width: 768px)";
-const canHoverExpand = () => window.matchMedia(HOVER_QUERY).matches;
 
 function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMobile }) {
+  const { hoverExpand } = useSettings();
   const [hovered, setHovered] = useState(false);
+
+  const canHoverExpand = () => {
+    hoverExpand && window.matchMedia(HOVER_QUERY).matches;
+    return hoverExpand;
+  }
+
+  useEffect(() => {
+    if (!hoverExpand) setHovered(false);
+  }, [hoverExpand])
 
   // The phone drawer is always full width, whatever the desktop state is
   const rail = collapsed && !mobileOpen;
@@ -22,7 +32,6 @@ function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMobile }) {
 
   return (
     <>
-      {/* Spacer: the width the page layout sees on md+. Phones have none. */}
       <div
         className={`hidden h-screen shrink-0 transition-[width] duration-300 ease-in-out md:block ${
           collapsed ? "w-20" : "w-64"

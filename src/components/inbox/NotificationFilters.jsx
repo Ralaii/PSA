@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { typeMeta } from "./notificationMeta";
 
 const chip = (active) =>
@@ -8,8 +9,39 @@ const chip = (active) =>
   }`;
 
 function NotificationFilters({ tab, onTabChange, type, onTypeChange, unreadCount }) {
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onWheel = (e) => {
+      // Let real horizontal gestures (trackpads) behave natively
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      // Nothing to scroll horizontally -> don't hijack the page scroll
+      if (el.scrollWidth <= el.clientWidth) return;
+
+      const atStart = el.scrollLeft <= 0 && e.deltaY < 0;
+      const atEnd =
+        el.scrollLeft + el.clientWidth >= el.scrollWidth - 1 && e.deltaY > 0;
+
+      // At the edges, let the page scroll vertically again
+      if (atStart || atEnd) return;
+
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div
+      ref={scrollRef}
+      className="flex items-center gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
       {["all", "unread"].map((t) => (
         <button key={t} onClick={() => onTabChange(t)} className={chip(tab === t)}>
           <span className="capitalize">{t}</span>

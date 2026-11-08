@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
-import { useSidebarState } from "../hooks/useSidebarState";
+import Sidebar from "../layout/Sidebar";
+import Topbar from "../layout/Topbar";
+import { useSidebarState } from "../../hooks/useSidebarState";
 
 function MainLayout() {
   const { 
