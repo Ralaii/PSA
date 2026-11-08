@@ -44,7 +44,7 @@ function EmployeeDetailToolbar({
           <ToolButton
             icon={<BsArrowLeft />}
             label="Back to employees"
-            onClick={() => navigate({ pathname: "/employees", search })}
+            onClick={() => navigate({ pathname: "/employee", search })}
           />
 
           <span className="mx-1 h-5 w-px bg-zinc-200 dark:bg-zinc-700" />

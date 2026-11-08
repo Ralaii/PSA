@@ -24,5 +24,8 @@ export function useSort(items, sorters) {
       return prev.dir === "asc" ? { key, dir: "desc" } : null;
     });
 
-  return { sorted, sort, toggle };
+  return { 
+    sorted, 
+    sort, 
+    toggle };
 }
