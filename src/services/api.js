@@ -3,12 +3,8 @@ import axios from "axios";
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { "Content-Type": "application/json" },
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
+  withCredentials: true,
+  withXSRFToken: true,
 });
 
 api.interceptors.response.use(
@@ -17,7 +13,9 @@ api.interceptors.response.use(
     const message =
       err.response?.data?.message ||
       (err.request ? "Cannot reach the server." : "Something went wrong.");
-    return Promise.reject(new Error(message));
+    const error = new Error(message);
+    error.status = err.response?.status;
+    return Promise.reject(error);
   }
 );
 
