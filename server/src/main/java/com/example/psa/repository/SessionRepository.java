@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
@@ -20,4 +21,6 @@ public interface SessionRepository extends JpaRepository<UserSession, UUID> {
     int revokeAllForUser(@Param("userId") UUID userId, @Param("now") Instant now);
 
     boolean existsByIdAndRevokedAtIsNull(UUID sessionId);
+
+    void deleteByExpiresAtBefore(Instant cutoff);
 }

@@ -6,18 +6,16 @@ import com.example.psa.dto.Response.LoginResponse;
 import com.example.psa.dto.Response.LoginResult;
 import com.example.psa.dto.Response.RegisterResponse;
 import com.example.psa.entity.UserSession;
-import com.example.psa.enums.AccountStatus;
 import com.example.psa.enums.Role;
 import com.example.psa.entity.AppUser;
-import com.example.psa.exception.AccountNotActiveException;
 import com.example.psa.repository.SessionRepository;
 import com.example.psa.repository.UserRepository;
+import com.example.psa.security.CustomUserDetails;
 import com.example.psa.security.JwtUtil;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +35,16 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final SessionRepository sessionRepository;
 
-    public RegisterResponse register(@Valid RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
 
+        String saltedAndHashedPassword = passwordEncoder.encode(request.password());
+
         AppUser appUser = new AppUser();
         appUser.setUsername(request.username());
-        appUser.setPassword(passwordEncoder.encode(request.password()));
+        appUser.setPassword(saltedAndHashedPassword);
         appUser.setRole(Role.USER);
         appUser.setCreatedAt(LocalDateTime.now());
         userRepository.save(appUser);
@@ -52,26 +53,22 @@ public class AuthService {
     }
 
     public LoginResult login(LoginRequest request) {
-        try {
-            authenticationManager.authenticate(
+        Authentication accountAuthentication;
+            accountAuthentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.username(),
                             request.password()
                     )
             );
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username and password");
-        }
 
-        AppUser user = userRepository.findByUsername(request.username())
-                .orElseThrow(() -> new BadCredentialsException("Invalid username"));
+        CustomUserDetails userDetails = (CustomUserDetails) accountAuthentication.getPrincipal();
+        Objects.requireNonNull(userDetails);
+        AppUser user = userDetails.getAppUser();
 
-        if (user.getStatus() != AccountStatus.ACTIVE) {
-            throw new AccountNotActiveException(user.getStatus());
-        }
-
+        Instant now = Instant.now();
         UserSession session = new UserSession();
         session.setUser(user);
+        session.setLastSeenAt(now);
         session.setExpiresAt(Instant.now().plus(Duration.ofDays(3)));
         sessionRepository.save(session);
 

@@ -1,10 +1,8 @@
 package com.example.psa.config;
 
-import com.example.psa.security.JwtFilter;
-import com.example.psa.security.RateLimitFilter;
-import com.example.psa.security.RestAccessDeniedHandler;
-import com.example.psa.security.RestAuthenticationEntryPoint;
+import com.example.psa.security.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -33,7 +33,8 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRepository(cookieCsrfTokenRepository())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                         .ignoringRequestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout")
                 )
                 .sessionManagement(session -> session
@@ -46,11 +47,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Narrow on purpose: a future /api/auth/me should NOT be public by accident.
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/error").permitAll()
+                        .requestMatchers("/api/employees/**").hasAnyRole("ADMIN", "HR")
                         .requestMatchers(HttpMethod.POST, "/api/generate/coe").authenticated()
                         .anyRequest().authenticated())
-                // Order: rate limit -> JWT -> UsernamePasswordAuthenticationFilter
+                // Order: rate limit -> JWT -> UsernamePasswordAuthenticationFilter -> Filter CsrfCookies
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(rateLimitFilter, JwtFilter.class);
+                .addFilterBefore(rateLimitFilter, JwtFilter.class)
+                .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);
 
         return http.build();
     }
@@ -69,5 +72,14 @@ public class SecurityConfig {
         FilterRegistrationBean<RateLimitFilter> registration = new FilterRegistrationBean<>(filter);
         registration.setEnabled(false);
         return registration;
+    }
+
+    @Value("${app.cookie.secure:true}")
+    private boolean secureCookies;
+
+    private CookieCsrfTokenRepository cookieCsrfTokenRepository() {
+        CookieCsrfTokenRepository repo = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        repo.setCookieCustomizer(c -> c.sameSite("Lax").secure(secureCookies));
+        return repo;
     }
 }

@@ -21,7 +21,7 @@ import java.util.Set;
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    private static final int GENERAL_LIMIT_PER_MINUTE = 20;
+    private static final int GENERAL_LIMIT_PER_MINUTE = 100;
     private static final int AUTH_LIMIT_PER_MINUTE = 5;
 
     // Endpoints that get the tighter limit (credential stuffing / signup abuse).
@@ -44,19 +44,17 @@ public class RateLimitFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest req) {
+        String path = req.getServletPath();
+        return path.equals("/api/auth/login") || path.equals("/api/auth/register");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // CORS preflights shouldn't burn a client's quota.
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Behind a proxy, set server.forward-headers-strategy=native (or framework)
-        // so this returns the real client IP instead of the proxy's.
         String ip = request.getRemoteAddr();
 
         boolean strict = STRICT_PATHS.contains(request.getRequestURI());

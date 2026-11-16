@@ -20,8 +20,7 @@ public class JwtUtil {
     public enum TokenStatus {
         VALID,
         EXPIRED,
-        INVALID,
-        REFRESHED
+        INVALID
     }
     public record TokenClaims(
             UUID userId,

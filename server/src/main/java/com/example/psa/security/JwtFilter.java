@@ -27,25 +27,25 @@ public class JwtFilter extends OncePerRequestFilter {
     private final AuthCookieFactory cookieFactory;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
+    protected void doFilterInternal(HttpServletRequest req,
+                                    HttpServletResponse res,
                                     FilterChain chain) throws ServletException, IOException {
-        String token = readCookie(request);
+        String token = readCookie(req);
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             JwtUtil.ParsedToken parsed = jwtUtil.parsedToken(token);
 
             switch (parsed.status()) {
-                case VALID -> {
-                    if (sessionService.isSessionActive(parsed.claims().sessionId())) {
-                        authenticate(parsed.claims(), request);
-                    };
-                }
-                case EXPIRED -> refresh(parsed.claims(), request, response);
-                default -> {}
+                case VALID -> sessionService.findActiveUser(parsed.claims().sessionId())
+                        .ifPresentOrElse(
+                                user -> authenticate(new TokenClaims(user.getId(), parsed.claims().sessionId(), user.getUsername(), user.getRole()), req),
+                                () -> clearCookies(res)
+                        );
+                case EXPIRED -> refresh(parsed.claims(), req, res);
+                case INVALID -> clearCookies(res);
             }
         }
-        chain.doFilter(request, response);
+        chain.doFilter(req, res);
     }
     private void refresh(TokenClaims old, HttpServletRequest req, HttpServletResponse res){
         sessionService.refresh(old.sessionId()).ifPresentOrElse(user -> {
@@ -64,7 +64,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 user.getRole()),
                 req
         );
-        }, () -> res.addHeader(HttpHeaders.SET_COOKIE, cookieFactory.clear().toString()));
+        }, () -> clearCookies(res));
     }
 
     private void authenticate(TokenClaims claims, HttpServletRequest req) {
@@ -81,5 +81,9 @@ public class JwtFilter extends OncePerRequestFilter {
             if (AuthCookieFactory.COOKIE_NAME.equals(cookie.getName())) return cookie.getValue();
         }
         return null;
+    }
+
+    private void clearCookies(HttpServletResponse res) {
+        res.addHeader(HttpHeaders.SET_COOKIE, cookieFactory.clear().toString());
     }
 }
