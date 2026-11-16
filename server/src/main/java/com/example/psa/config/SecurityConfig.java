@@ -47,8 +47,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Narrow on purpose: a future /api/auth/me should NOT be public by accident.
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/error").permitAll()
-                        .requestMatchers("/api/employees/**").hasAnyRole("ADMIN", "HR")
-                        .requestMatchers(HttpMethod.POST, "/api/generate/coe").authenticated()
+                        .requestMatchers("/api/employees/**").hasAnyRole("ADMIN", "HR") //RESTRICT ALL PATH AFTER /**
+                        .requestMatchers(HttpMethod.POST, "/api/employees/generate/coe").hasAnyRole("ADMIN", "HR") //REDUNDANT FOR NOW BUT FUTURE PROOFING IN FOR REFACTORING IT LATER
                         .anyRequest().authenticated())
                 // Order: rate limit -> JWT -> UsernamePasswordAuthenticationFilter -> Filter CsrfCookies
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
