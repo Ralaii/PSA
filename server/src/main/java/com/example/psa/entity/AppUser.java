@@ -1,18 +1,23 @@
 package com.example.psa.entity;
 
+import com.example.psa.enums.AccountStatus;
+import com.example.psa.enums.Role;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -27,22 +32,13 @@ public class AppUser {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountStatus status = AccountStatus.PENDING;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+
     }
-
-    // Getters
-    public String getId() { return id; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public Role getRole() { return role; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-
-    // Setters
-    public void setId(String id) { this.id = id; }
-    public void setUsername(String username) { this.username = username; }
-    public void setPassword(String password) { this.password = password; }
-    public void setRole(Role role) { this.role = role; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

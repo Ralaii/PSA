@@ -13,4 +13,7 @@ export const notificationService = {
   markReadMany: (ids) => api.post("/notifications/bulk-read", { ids }).then((res) => res.data),
   markUnreadMany: (ids) => api.post("/notifications/bulk-unread", { ids }).then((res) => res.data),
   removeMany: (ids) => api.post("/notifications/bulk-delete", { ids }).then((res) => res.data),
+
+  // Search Query
+  search: (q, limit = 5) => api.get("/notifications", { params: { q, limit } }).then((res) => res.data),
 };

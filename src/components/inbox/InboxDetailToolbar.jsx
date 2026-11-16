@@ -28,7 +28,6 @@ function InboxDetailToolbar({
   const menuRef = useRef(null);
   const { search } = useLocation();
 
-  // Close the "more" menu on outside click or Escape
   useEffect(() => {
     if (!menuOpen) return;
     const onClick = (e) => !menuRef.current?.contains(e.target) && setMenuOpen(false);

@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 import com.example.psa.dto.Request.UserRequest;
 
 @RestController
@@ -27,7 +29,7 @@ public class UserController {
 
 //     GET /api/users/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<AppUser> getUserById(@PathVariable String id) {
+    public ResponseEntity<AppUser> getUserById(@PathVariable UUID id) {
         Optional<AppUser> user = userService.getUserById(id);
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -51,7 +53,7 @@ public class UserController {
 
     // DELETE /api/users/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

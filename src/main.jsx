@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppToaster } from './components/ui/AppToaster.jsx'
+import { SettingsProvider } from './context/SettingContext.jsx'
 
 try {
   if (localStorage.getItem('theme') === 'dark') {
@@ -16,7 +17,7 @@ const queryClient = new QueryClient();
 async function enableMocking() {
   if (!import.meta.env.DEV) return;
   if (import.meta.env.VITE_USE_MOCKS !== "true") return;
-  const { worker } = await import('./mocks/data/browser');
+  const { worker } = await import('./mocks/browser.js');
   return worker.start({ onUnhandledRequest: 'bypass' });
 }
 
@@ -29,8 +30,10 @@ try {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
-      <AppToaster />
+      <SettingsProvider>
+        <App />
+        <AppToaster />
+      </SettingsProvider>
     </QueryClientProvider>
   </StrictMode>
 )

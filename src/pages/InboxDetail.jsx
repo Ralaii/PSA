@@ -10,7 +10,7 @@ import { useInboxActions } from "../hooks/useInboxActions";
 function InboxDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { search } = useLocation(); // carries ?tab=...&type=... through every navigation
+  const { search } = useLocation();
 
   const { data: notification, isLoading, isError } = useNotification(id);
   const { position, total, newer, older } = useInboxNeighbors(id);
@@ -28,33 +28,36 @@ function InboxDetail() {
   };
 
   return (
-    <div>
+    <>
       <InboxDetailToolbar
-        notification={notification}
-        togglePending={actions.isTogglePending}
-        onToggleRead={() => notification && actions.toggleRead(notification)}
-        onDelete={() => setConfirmOpen(true)}
-        position={position}
-        total={total}
-        onNewer={newer ? () => goTo(newer) : null}
-        onOlder={older ? () => goTo(older) : null}
-      />
-
-      <div className="mx-auto max-w-5xl">
-        <InboxMessage
           notification={notification}
-          isLoading={isLoading}
-          isError={isError}
+          togglePending={actions.isTogglePending}
+          onToggleRead={() => notification && actions.toggleRead(notification)}
+          onDelete={() => setConfirmOpen(true)}
+          position={position}
+          total={total}
+          onNewer={newer ? () => goTo(newer) : null}
+          onOlder={older ? () => goTo(older) : null}
+        />
+      <div>
+        
+
+        <div className="mx-auto max-w-5xl">
+          <InboxMessage
+            notification={notification}
+            isLoading={isLoading}
+            isError={isError}
+          />
+        </div>
+
+        <ConfirmDeleteDialog
+          notification={confirmOpen ? notification : null}
+          pending={actions.isDeleting}
+          onConfirm={confirmDelete}
+          onCancel={() => setConfirmOpen(false)}
         />
       </div>
-
-      <ConfirmDeleteDialog
-        notification={confirmOpen ? notification : null}
-        pending={actions.isDeleting}
-        onConfirm={confirmDelete}
-        onCancel={() => setConfirmOpen(false)}
-      />
-    </div>
+    </>
   );
 }
 

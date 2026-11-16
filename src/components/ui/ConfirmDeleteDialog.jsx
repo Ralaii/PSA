@@ -14,11 +14,11 @@ function ConfirmDeleteDialog({ notification, count = 0, pending = false, onConfi
   if (!open) return null;
 
   const title = isBulk
-    ? `Delete ${count} notification${count > 1 ? "s" : ""}?`
-    : "Delete notification?";
+    ? `Delete ${count} inbox${count > 1 ? "s" : ""}?`
+    : "Delete Inbox?";
 
   const message = isBulk
-    ? `${count > 1 ? "These notifications" : "This notification"} will be permanently removed. This can't be undone.`
+    ? `${count > 1 ? "These inboxes" : "This inbox"} will be permanently removed. This can't be undone.`
     : `"${notification.title}" will be permanently removed. This can't be undone.`;
 
   return (

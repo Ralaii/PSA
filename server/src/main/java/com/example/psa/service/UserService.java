@@ -1,13 +1,14 @@
 package com.example.psa.service;
 
 import com.example.psa.entity.AppUser;
-import com.example.psa.entity.Role;
+import com.example.psa.enums.Role;
 import com.example.psa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -22,7 +23,7 @@ public class UserService {
     }
 
     // Get user by ID
-    public Optional<AppUser> getUserById(String id) {
+    public Optional<AppUser> getUserById(UUID id) {
         return userRepository.findById(id);
     }
 
@@ -42,7 +43,7 @@ public class UserService {
     }
 
     // Delete user
-    public void deleteUser(String id) {
+    public void deleteUser(UUID id) {
         userRepository.deleteById(id);
     }
 }

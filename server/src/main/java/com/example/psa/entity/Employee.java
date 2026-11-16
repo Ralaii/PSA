@@ -1,17 +1,31 @@
 package com.example.psa.entity;
 
+import com.example.psa.enums.CivilStatus;
+import com.example.psa.enums.EmploymentStatus;
+import com.example.psa.enums.EmploymentType;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-@Data
 @Entity
+@EntityListeners(AuditingEntityListener.class)
+@Setter
+@Getter
 @Table(name = "employees")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(name = "employee_number", unique = true, nullable = false)
     private String employeeNumber;
@@ -29,14 +43,44 @@ public class Employee {
     @Column(name = "middle_name")
     private String middleName;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id")
+    private EmployeePosition position;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "civil_status")
+    private CivilStatus civilStatus;
+
+    @Column(name = "pagibig_number")
+    private String pagibigNum;
+
+    @Column(name = "philhealth_number")
+    private String philhealthNum;
+
+    @Column(name = "phylsis_number")
+    private String philsisNum;
+
+    @Column(name = "tin_number")
+    private String tinNum;
+
+    @Column(name = "telephone_number")
+    private String telephoneNum;
 
     @Column(name = "phone_number")
-    private String phoneNumber;
+    private String phoneNum;
 
-    @Column(nullable = false)
-    private String address;
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false, name = "hire_date")
     private LocalDate hireDate;
@@ -48,4 +92,22 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(name = "employment_type", nullable = false)
     private EmploymentType employmentType;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EmployeeAddress> addresses = new ArrayList<>();
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @LastModifiedBy
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @OneToMany(mappedBy = "employee", cascade =  CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("yearFrom ASC")
+    private  List<EmployeeEducation> education = new ArrayList<>();
+
+    @OneToMany(mappedBy = "employee")
+    private  List<Project> projects = new ArrayList<>();
 }
