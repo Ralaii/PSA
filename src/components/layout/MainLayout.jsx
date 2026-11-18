@@ -3,7 +3,7 @@ import Sidebar from "../layout/Sidebar";
 import Topbar from "../layout/Topbar";
 import { useSidebarState } from "../../hooks/useSidebarState";
 
-function MainLayout() {
+function MainLayout({ children }) {
   const { 
     collapsed, 
     setCollapsed, 
@@ -23,7 +23,7 @@ function MainLayout() {
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar onMenuClick={() => setMobileOpen(true)} />
         <main className="flex-1 overflow-y-auto p-3 sm:p-6">
-          <Outlet />
+          {children ?? <Outlet />}
         </main>
       </div>
 

@@ -1,6 +1,6 @@
 package com.example.psa.exception;
 
-import com.example.psa.dto.Response.ApiErrorResponse;
+import com.example.psa.dto.Response.common.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

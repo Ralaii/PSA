@@ -1,6 +1,5 @@
 package com.example.psa.dto.Request;
 
-import com.example.psa.entity.EmployeePosition;
 import com.example.psa.enums.CivilStatus;
 import com.example.psa.enums.EmploymentStatus;
 import com.example.psa.enums.EmploymentType;

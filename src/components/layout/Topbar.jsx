@@ -2,14 +2,19 @@ import { useState } from "react";
 import { useLocation } from "react-router";
 import { BsSearch } from "react-icons/bs";
 import { Menu, Moon, Sun } from "lucide-react";
-import { sidebarItems } from "../sidebar/sidebarItems";
+import { sidebarItems } from "../../config/sidebarItems";
 import NotificationDropdown from "../inbox/NotificationDropdown";
 import TopbarSearchInput from "../search/TopbarSearchInput";
 import useTheme from "../../hooks/useTheme";
 import { useTopbarSearch } from "../../hooks/search/useTopbarSearch";
+import { useMe } from "../../hooks/useMe";
 
 const iconBtn =
   "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-900 transition hover:bg-zinc-300 dark:text-zinc-100 dark:hover:bg-zinc-800";
+
+  const getInitials = (name = "") => name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase() || "?";
+
+  const formatRole = (role = "") => role.charAt(0) + role.slice(1).toLocaleLowerCase().replace(/_/g, " ");
 
 function Topbar({ onMenuClick }) {
   const { pathname } = useLocation();
@@ -18,6 +23,8 @@ function Topbar({ onMenuClick }) {
   const { isDark, toggleTheme } = useTheme();
   const [searchOpen, setSearchOpen] = useState(false);
   const search = useTopbarSearch();
+
+  const { data: me} = useMe();
 
   return (
     <header className="shrink-0 border-b border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900">
@@ -72,8 +79,8 @@ function Topbar({ onMenuClick }) {
               JA
             </div>
             <div className="hidden leading-tight lg:block">
-              <p className="text-sm font-medium">Jeus Armentano</p>
-              <p className="text-xs text-zinc-500">Admin</p>
+              <p className="text-sm font-medium">{me?.name}</p>
+              <p className="text-xs text-zinc-500">{formatRole(me?.role)}</p>
             </div>
           </div>
         </div>

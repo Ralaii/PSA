@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response;
+package com.example.psa.dto.Response.auth;
 
 public record RegisterResponse(String username) {
 }

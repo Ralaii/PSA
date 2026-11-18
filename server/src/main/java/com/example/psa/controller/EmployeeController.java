@@ -1,17 +1,20 @@
 package com.example.psa.controller;
 
 import com.example.psa.dto.Request.UpdateEmployeeRequest;
-import com.example.psa.dto.Response.EmployeeDetailResponse;
-import com.example.psa.dto.Response.EmployeeSummaryResponse;
-import com.example.psa.dto.Response.PageResponse;
-import com.example.psa.dto.Response.UpdateEmployeeResponse;
+import com.example.psa.dto.Response.employee.EmployeeDetailResponse;
+import com.example.psa.dto.Response.employee.EmployeeListResponse;
+import com.example.psa.dto.Response.common.PageResponse;
+import com.example.psa.dto.Response.employee.UpdateEmployeeResponse;
+import com.example.psa.dto.Response.search.EmployeeSearchResponse;
 import com.example.psa.service.EmployeeService;
 import com.example.psa.service.EmployeeUpdateService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,8 +25,8 @@ public class EmployeeController {
     private final EmployeeUpdateService employeeUpdateService;
 
     @GetMapping
-    public PageResponse<EmployeeSummaryResponse> getEmployees(@PageableDefault(size = 25, sort = "employeeNumber")Pageable pageable){
-        return employeeService.getEmployees(pageable);
+    public PageResponse<EmployeeListResponse> getEmployeesList(@PageableDefault(size = 25, sort = "employeeNumber")Pageable pageable){
+        return employeeService.getEmployeesList(pageable);
     }
 
     @GetMapping("/{id}")
@@ -32,8 +35,12 @@ public class EmployeeController {
     }
 
     @PatchMapping("/{id}")
-    public UpdateEmployeeResponse updateEmployee(@RequestBody UUID id, UpdateEmployeeRequest updateEmployeeRequest){
+    public UpdateEmployeeResponse updateEmployee(@PathVariable UUID id,@Valid @RequestBody UpdateEmployeeRequest updateEmployeeRequest){
         return employeeUpdateService.updateEmployee(id, updateEmployeeRequest);
     }
 
+    @GetMapping("/search")
+    public List<EmployeeSearchResponse> searchEmployees(@RequestParam String q, @RequestParam(defaultValue = "5") int limit) {
+        return  employeeService.searchEmployees(q, limit);
+    }
 }
