@@ -2,6 +2,7 @@ package com.example.psa.repository;
 
 import com.example.psa.dto.Response.project.ProjectListResponse;
 import com.example.psa.dto.Response.project.ProjectMemberResponse;
+import com.example.psa.dto.Response.search.ProjectSearchResponse;
 import com.example.psa.entity.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,4 +38,15 @@ public interface ProjectRepository extends JpaRepository<Project, UUID> {
     order by pa.projectEmployeeNum
 """)
     List<ProjectMemberResponse> findProjectMembersByProjectId(@Param("projectId") UUID projectId);
+
+    @Query("""
+    select new com.example.psa.dto.Response.search.ProjectSearchResponse(
+        p.id, p.name, p.projectNumber
+        )
+    from Project p
+    where lower (p.name) like lower(concat('%', :q, '%'))
+    or lower(p.projectNumber) like lower(concat('%', :q, '%'))
+    order by p.name, p.projectNumber    
+""")
+    List<ProjectSearchResponse> search(@Param("q") String q, Pageable pageable);
 }

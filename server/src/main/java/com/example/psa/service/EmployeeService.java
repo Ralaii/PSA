@@ -3,17 +3,21 @@ package com.example.psa.service;
 import com.example.psa.dto.Response.employee.EmployeeDetailResponse;
 import com.example.psa.dto.Response.employee.EmployeeListResponse;
 import com.example.psa.dto.Response.common.PageResponse;
+import com.example.psa.dto.Response.search.EmployeeSearchResponse;
 import com.example.psa.entity.Employee;
 import com.example.psa.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.type.TypeReference;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,6 +44,17 @@ public class EmployeeService {
                 Duration.ofHours(1),
                 () -> fetchEmployeesListFromDb(pageable)
         );
+    }
+
+//  SEARCH QUERY
+    @Transactional(readOnly = true)
+    public List<EmployeeSearchResponse> searchEmployees(String q, int limit) {
+        String term = q == null ? "" : q.trim().toLowerCase();
+        if (term.length() < 2) {
+            return List.of();
+        }
+        int size = Math.clamp(limit, 1, 20);
+        return employeeRepository.search(term, PageRequest.of(0, size));
     }
 
 //  HELPER & FALLBACK METHOD (DB CALL) FOR getEmployees

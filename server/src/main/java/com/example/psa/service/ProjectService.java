@@ -4,9 +4,12 @@ import com.example.psa.dto.Response.common.PageResponse;
 import com.example.psa.dto.Response.project.ProjectDetailResponse;
 import com.example.psa.dto.Response.project.ProjectListResponse;
 import com.example.psa.dto.Response.project.ProjectMemberResponse;
+import com.example.psa.dto.Response.search.ProjectSearchResponse;
 import com.example.psa.entity.Project;
 import com.example.psa.repository.ProjectRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,17 @@ public class ProjectService {
                 Duration.ofHours(1),
                 () -> findProjectList(pageable)
         );
+    }
+
+//  SEARCH QUERY
+    @Transactional(readOnly = true)
+    public List<ProjectSearchResponse> searchProjects(String q, int limit) {
+        String term = q == null ? "" : q.trim().toLowerCase();
+        if (term.length() < 2) {
+            return List.of();
+        }
+        int size = Math.clamp(limit, 1, 20);
+        return projectRepository.search(term, PageRequest.of(0, size));
     }
 
 //  HELPER METHOD FOR PROJECT LISTS

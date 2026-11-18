@@ -5,7 +5,7 @@ import com.example.psa.dto.Request.RegisterRequest;
 import com.example.psa.dto.Response.auth.LoginResponse;
 import com.example.psa.dto.Response.auth.LoginResult;
 import com.example.psa.dto.Response.auth.RegisterResponse;
-import com.example.psa.entity.AppUser;
+import com.example.psa.entity.User;
 import com.example.psa.entity.UserSession;
 import com.example.psa.enums.Role;
 import com.example.psa.repository.SessionRepository;
@@ -41,14 +41,14 @@ public class AuthService {
 
         String saltedAndHashedPassword = passwordEncoder.encode(request.password());
 
-        AppUser appUser = new AppUser();
-        appUser.setUsername(request.username());
-        appUser.setPassword(saltedAndHashedPassword);
-        appUser.setRole(Role.USER);
-        appUser.setCreatedAt(LocalDateTime.now());
-        userRepository.save(appUser);
+        User user = new User();
+        user.setUsername(request.username());
+        user.setPassword(saltedAndHashedPassword);
+        user.setRole(Role.USER);
+        user.setCreatedAt(LocalDateTime.now());
+        userRepository.save(user);
 
-        return new RegisterResponse(appUser.getUsername());
+        return new RegisterResponse(user.getUsername());
     }
 
     public LoginResult login(LoginRequest request) {
@@ -62,7 +62,7 @@ public class AuthService {
 
         CustomUserDetails userDetails = (CustomUserDetails) accountAuthentication.getPrincipal();
         Objects.requireNonNull(userDetails);
-        AppUser user = userDetails.getAppUser();
+        User user = userDetails.getUser();
 
         Instant now = Instant.now();
         UserSession session = new UserSession();

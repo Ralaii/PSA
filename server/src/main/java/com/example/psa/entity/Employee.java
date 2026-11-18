@@ -31,7 +31,7 @@ public class Employee {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true)
-    private AppUser appUser;
+    private User user;
 
     @Column(nullable = false, name = "first_name")
     private String firstName;

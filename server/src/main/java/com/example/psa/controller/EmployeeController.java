@@ -5,6 +5,7 @@ import com.example.psa.dto.Response.employee.EmployeeDetailResponse;
 import com.example.psa.dto.Response.employee.EmployeeListResponse;
 import com.example.psa.dto.Response.common.PageResponse;
 import com.example.psa.dto.Response.employee.UpdateEmployeeResponse;
+import com.example.psa.dto.Response.search.EmployeeSearchResponse;
 import com.example.psa.service.EmployeeService;
 import com.example.psa.service.EmployeeUpdateService;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,4 +39,8 @@ public class EmployeeController {
         return employeeUpdateService.updateEmployee(id, updateEmployeeRequest);
     }
 
+    @GetMapping("/search")
+    public List<EmployeeSearchResponse> searchEmployees(@RequestParam String q, @RequestParam(defaultValue = "5") int limit) {
+        return  employeeService.searchEmployees(q, limit);
+    }
 }

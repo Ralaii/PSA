@@ -1,6 +1,6 @@
 package com.example.psa.service;
 
-import com.example.psa.entity.AppUser;
+import com.example.psa.entity.User;
 import com.example.psa.entity.UserSession;
 import com.example.psa.enums.AccountStatus;
 import com.example.psa.repository.SessionRepository;
@@ -24,7 +24,7 @@ public class SessionService {
     private long idleTimeoutMinutes;
 
     @Transactional
-    public Optional<AppUser> refresh(UUID sessionId){
+    public Optional<User> refresh(UUID sessionId){
         Instant now = Instant.now();
 
         return sessionRepository.findById(sessionId)
@@ -46,7 +46,7 @@ public class SessionService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<AppUser> findActiveUser(UUID sessionId){
+    public Optional<User> findActiveUser(UUID sessionId){
         Instant now = Instant.now();
         return sessionRepository.findById(sessionId)
                 .filter(s -> s.getRevokedAt() == null)

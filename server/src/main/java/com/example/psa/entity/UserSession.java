@@ -21,7 +21,7 @@ public class UserSession {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private AppUser user;
+    private User user;
 
     private Instant createdAt = Instant.now();
     private Instant expiresAt;
