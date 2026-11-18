@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response;
+package com.example.psa.dto.Response.employee;
 
 import com.example.psa.entity.EmployeeAddress;
 import com.example.psa.enums.AddressType;

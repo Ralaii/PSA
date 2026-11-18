@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response;
+package com.example.psa.dto.Response.project;
 
 import com.example.psa.entity.Project;
 import com.example.psa.enums.ProjectStatus;

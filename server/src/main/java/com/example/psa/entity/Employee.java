@@ -6,7 +6,6 @@ import com.example.psa.enums.EmploymentType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -109,5 +108,5 @@ public class Employee {
     private  List<EmployeeEducation> education = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee")
-    private  List<Project> projects = new ArrayList<>();
+    private List<ProjectAssignment> projectAssignments = new ArrayList<>();
 }

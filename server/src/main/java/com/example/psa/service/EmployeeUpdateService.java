@@ -1,7 +1,7 @@
 package com.example.psa.service;
 
 import com.example.psa.dto.Request.UpdateEmployeeRequest;
-import com.example.psa.dto.Response.UpdateEmployeeResponse;
+import com.example.psa.dto.Response.employee.UpdateEmployeeResponse;
 import com.example.psa.entity.Employee;
 import com.example.psa.entity.EmployeePosition;
 import com.example.psa.exception.DuplicateResourceException;

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router";
-import { sidebarItems } from "./sidebarItems";
+import { sidebarItems } from "../../config/sidebarItems";
 
 const linkClass = ({ isActive }) =>
   `flex items-center gap-3 overflow-hidden rounded-lg px-4 py-2 text-zinc-900 transition dark:text-zinc-100 ${

@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response;
+package com.example.psa.dto.Response.auth;
 
 import com.example.psa.enums.Role;
 

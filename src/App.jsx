@@ -28,12 +28,14 @@ function App() {
         {/* MAIN ROUTES OF THE LOGIN */}
         <Route element={<MainLayout/>}>
           <Route path="/dashboard" element={<Dashboard/>}/>
-
+{/* 
           <Route path="/inbox" element={<Inbox/>}/>
-          <Route path="/inbox/:id" element={<InboxDetail/>}/>
+          <Route path="/inbox/:id" element={<InboxDetail/>}/> */}
 
           <Route path="/project" element/>
           <Route path="/project/:id" element/>
+
+          <Route path="/files" element/>
 
           <Route path="/employee" element={<Employee/>}/>
           <Route path="/employee/:id" element={<EmployeeDetail/>}/>

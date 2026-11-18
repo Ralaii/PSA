@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response;
+package com.example.psa.dto.Response.common;
 
 import org.springframework.data.domain.Page;
 

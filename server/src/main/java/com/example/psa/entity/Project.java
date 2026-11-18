@@ -10,6 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name = "project")
@@ -20,6 +22,9 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "project_number")
+    private String projectNumber;
 
     @Column(nullable = false, length = 150)
     private String name;
@@ -44,7 +49,6 @@ public class Project {
     @DateTimeFormat
     private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectAssignment> assignments = new ArrayList<>();
 }

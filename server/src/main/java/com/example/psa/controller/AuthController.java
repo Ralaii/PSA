@@ -2,9 +2,9 @@ package com.example.psa.controller;
 
 import com.example.psa.dto.Request.LoginRequest;
 import com.example.psa.dto.Request.RegisterRequest;
-import com.example.psa.dto.Response.LoginResponse;
-import com.example.psa.dto.Response.LoginResult;
-import com.example.psa.dto.Response.RegisterResponse;
+import com.example.psa.dto.Response.auth.LoginResponse;
+import com.example.psa.dto.Response.auth.LoginResult;
+import com.example.psa.dto.Response.auth.RegisterResponse;
 import com.example.psa.security.AuthCookieFactory;
 import com.example.psa.service.AuthService;
 import jakarta.validation.Valid;
@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router";
 import { BsSearch } from "react-icons/bs";
 import { Menu, Moon, Sun } from "lucide-react";
-import { sidebarItems } from "../sidebar/sidebarItems";
+import { sidebarItems } from "../../config/sidebarItems";
 import NotificationDropdown from "../inbox/NotificationDropdown";
 import TopbarSearchInput from "../search/TopbarSearchInput";
 import useTheme from "../../hooks/useTheme";

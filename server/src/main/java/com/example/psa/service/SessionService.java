@@ -4,10 +4,8 @@ import com.example.psa.entity.AppUser;
 import com.example.psa.entity.UserSession;
 import com.example.psa.enums.AccountStatus;
 import com.example.psa.repository.SessionRepository;
-import com.example.psa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

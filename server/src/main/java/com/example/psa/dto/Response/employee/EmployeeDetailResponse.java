@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response;
+package com.example.psa.dto.Response.employee;
 
 import com.example.psa.entity.Branch;
 import com.example.psa.entity.Employee;
@@ -29,7 +29,7 @@ public record EmployeeDetailResponse(
         EmploymentType employmentType,
         List<AddressResponse> addresses,
         List<EducationResponse> education,
-        List<ProjectResponse> projects
+        List<EmployeeProjectResponse> projects
 ) {
     public static EmployeeDetailResponse from(Employee e) {
         String name = e.getFirstName() + " " + e.getLastName() + " " + (e.getMiddleName() != null ? " " + e.getMiddleName().charAt(0) : "");
@@ -52,6 +52,6 @@ public record EmployeeDetailResponse(
                 e.getEmploymentType(),
                 e.getAddresses().stream().map(AddressResponse::from).toList(),
                 e.getEducation().stream().map(EducationResponse::from).toList(),
-                e.getProjects().stream().map(ProjectResponse::from).toList());
+                e.getProjectAssignments().stream().map(EmployeeProjectResponse::from).toList());
     }
 }

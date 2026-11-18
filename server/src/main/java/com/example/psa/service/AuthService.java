@@ -2,12 +2,12 @@ package com.example.psa.service;
 
 import com.example.psa.dto.Request.LoginRequest;
 import com.example.psa.dto.Request.RegisterRequest;
-import com.example.psa.dto.Response.LoginResponse;
-import com.example.psa.dto.Response.LoginResult;
-import com.example.psa.dto.Response.RegisterResponse;
+import com.example.psa.dto.Response.auth.LoginResponse;
+import com.example.psa.dto.Response.auth.LoginResult;
+import com.example.psa.dto.Response.auth.RegisterResponse;
+import com.example.psa.entity.AppUser;
 import com.example.psa.entity.UserSession;
 import com.example.psa.enums.Role;
-import com.example.psa.entity.AppUser;
 import com.example.psa.repository.SessionRepository;
 import com.example.psa.repository.UserRepository;
 import com.example.psa.security.CustomUserDetails;
@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
