@@ -5,6 +5,7 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
   withXSRFToken: true,
+  timeout: 5000
 });
 
 api.interceptors.response.use(
@@ -15,6 +16,7 @@ api.interceptors.response.use(
       (err.request ? "Cannot reach the server." : "Something went wrong.");
     const error = new Error(message);
     error.status = err.response?.status;
+    error.isNetworkError = !err.response;
     return Promise.reject(error);
   }
 );

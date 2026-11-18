@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { inputClass } from "../components/styles";
 import useAuth from "../hooks/useAuth";
+import SpinnerOverlay from "../components/ui/SpinnerOverlay";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
