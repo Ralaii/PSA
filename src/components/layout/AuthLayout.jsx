@@ -3,7 +3,7 @@ import { Moon, Sun } from "lucide-react";
 import useTheme from "../../hooks/useTheme";
 import loginPhoto from "../../assets/pylon2022.jpg";
 
-export default function AuthLayout() {
+export default function AuthLayout({ children }) {
   const { isDark, toggleTheme } = useTheme();
 
   return (
@@ -26,7 +26,7 @@ export default function AuthLayout() {
 
       <main className="relative z-10 flex min-h-screen items-center justify-center p-6">
         <div className="w-full max-w-md rounded-2xl bg-white/85 p-8 shadow-xl backdrop-blur-md transition-colors dark:bg-zinc-900/85">
-          <Outlet />
+          {children ?? <Outlet />}
         </div>
       </main>
     </div>

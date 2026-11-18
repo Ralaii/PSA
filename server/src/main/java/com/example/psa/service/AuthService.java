@@ -2,22 +2,26 @@ package com.example.psa.service;
 
 import com.example.psa.dto.Request.LoginRequest;
 import com.example.psa.dto.Request.RegisterRequest;
-import com.example.psa.dto.Response.auth.LoginResponse;
 import com.example.psa.dto.Response.auth.LoginResult;
 import com.example.psa.dto.Response.auth.RegisterResponse;
+import com.example.psa.dto.Response.auth.ResponseMe;
+import com.example.psa.entity.Employee;
 import com.example.psa.entity.User;
 import com.example.psa.entity.UserSession;
 import com.example.psa.enums.Role;
+import com.example.psa.repository.EmployeeRepository;
 import com.example.psa.repository.SessionRepository;
 import com.example.psa.repository.UserRepository;
 import com.example.psa.security.CustomUserDetails;
 import com.example.psa.security.JwtUtil;
+import com.example.psa.security.JwtUtil.TokenClaims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -33,6 +37,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final SessionRepository sessionRepository;
+    private final EmployeeRepository employeeRepository;
 
     public RegisterResponse register(RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
@@ -51,6 +56,7 @@ public class AuthService {
         return new RegisterResponse(user.getUsername());
     }
 
+    @Transactional
     public LoginResult login(LoginRequest request) {
         Authentication accountAuthentication;
             accountAuthentication = authenticationManager.authenticate(
@@ -77,9 +83,17 @@ public class AuthService {
                 user.getUsername(),
                 user.getRole()
         );
+
+        Employee employee = employeeRepository.findByUserId(user.getId()).orElse(null);
         return new LoginResult(
                 jwt,
-                new LoginResponse(user.getUsername(), user.getRole())
+                ResponseMe.from(user, employee)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseMe getCurrentUser(TokenClaims claims) {
+        Employee employee = employeeRepository.findByUserId(claims.userId()).orElse(null);
+        return ResponseMe.from(claims, employee);
     }
 }

@@ -2,20 +2,20 @@ package com.example.psa.controller;
 
 import com.example.psa.dto.Request.LoginRequest;
 import com.example.psa.dto.Request.RegisterRequest;
-import com.example.psa.dto.Response.auth.LoginResponse;
 import com.example.psa.dto.Response.auth.LoginResult;
 import com.example.psa.dto.Response.auth.RegisterResponse;
+import com.example.psa.dto.Response.auth.ResponseMe;
 import com.example.psa.security.AuthCookieFactory;
+import com.example.psa.security.JwtUtil.TokenClaims;
 import com.example.psa.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ResponseMe> login(@Valid @RequestBody LoginRequest request) {
         LoginResult result = authService.login(request);
 
         ResponseCookie cookie = cookieFactory.create(result.jwt());
@@ -39,5 +39,10 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(result.response());
+    }
+
+    @GetMapping("/me")
+    public ResponseMe me(@AuthenticationPrincipal TokenClaims claims) {
+        return authService.getCurrentUser(claims);
     }
 }

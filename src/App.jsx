@@ -10,6 +10,9 @@ import NotFound from "./pages/NotFound";
 import InboxDetail from "./pages/InboxDetail";
 import Settings from "./pages/Settings";
 import EmployeeDetail from "./pages/EmployeeDetail";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
+import GuestRoute from "./components/layout/GuestRoute";
+import Home from "./pages/Home";
 
 function App() {
   return(
@@ -17,35 +20,40 @@ function App() {
       <Routes>
 
         {/* ROUTES FOR AUTH */}
-        <Route element={<AuthLayout/>}>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>}/>
+        <Route element={<GuestRoute/>}>
+          <Route element={<AuthLayout/>}>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/register" element={<Register/>}/>
+          </Route>
         </Route>
 
         {/* NOT FOUND ROUTE STILL DECIDING WHAT TO DO */}
-          <Route path="*" element={<NotFound/>}/>
+
+          <Route path="/" element={<Home/>}/>
 
         {/* MAIN ROUTES OF THE LOGIN */}
-        <Route element={<MainLayout/>}>
-          <Route path="/dashboard" element={<Dashboard/>}/>
-{/* 
-          <Route path="/inbox" element={<Inbox/>}/>
-          <Route path="/inbox/:id" element={<InboxDetail/>}/> */}
+        <Route element={<ProtectedRoute/>}>
+          <Route element={<MainLayout/>}>
+        
+            <Route path="/dashboard" element={<Dashboard/>}/>
+  {/* 
+            <Route path="/inbox" element={<Inbox/>}/>
+            <Route path="/inbox/:id" element={<InboxDetail/>}/> */}
 
-          <Route path="/project" element/>
-          <Route path="/project/:id" element/>
+            <Route path="/project" element/>
+            <Route path="/project/:id" element/>
 
-          <Route path="/files" element/>
+            <Route path="/files" element/>
 
-          <Route path="/employee" element={<Employee/>}/>
-          <Route path="/employee/:id" element={<EmployeeDetail/>}/>
+            <Route path="/employee" element={<Employee/>}/>
+            <Route path="/employee/:id" element={<EmployeeDetail/>}/>
 
-          <Route path="/settings" element={<Settings/>}/>
-          <Route path="/trash" element/>
+            <Route path="/settings" element={<Settings/>}/>
+            <Route path="/trash" element/>
 
-          
+          </Route>
         </Route>
-
+        <Route path="*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>
     

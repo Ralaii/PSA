@@ -2,6 +2,7 @@ package com.example.psa.repository;
 
 import com.example.psa.dto.Response.search.EmployeeSearchResponse;
 import com.example.psa.entity.Employee;
+import com.example.psa.entity.User;
 import jakarta.validation.constraints.Email;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
-    public Employee findByEmployeeNumberOrderByEmployeeNumberDesc(String employeeNumber);
-    public Employee findByEmployeeNumber(UUID employeeNumber);
-    public Employee findByLastName(String lastName);
-    public Employee findByFirstName(String firstName);
+    Optional<Employee> findByUserId(UUID userId);
 
     @Query("""
         select e from Employee e
