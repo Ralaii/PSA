@@ -4,12 +4,13 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import AuthLayout from "../components/layout/AuthLayout";
 import FullPageSpinner from "../components/ui/FullPageSpinner";
+import ServerErrorModal from "../components/ui/ServerErrorModal";
 
 function Home() {
   const { data: me, isLoading, isError } = useMe();
 
   if (isLoading) return <FullPageSpinner />;
-  if (isError) return <div>Cannot reach the server.</div>;
+  if (isError) return <ServerErrorModal/>;
 
   return me ? (
     <MainLayout>

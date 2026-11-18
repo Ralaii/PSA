@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 function Spinner({ className = "" }) {
+  const [ countFailure, setCountFailure ] = useState(0);
   return (
     <div
       role="status"
