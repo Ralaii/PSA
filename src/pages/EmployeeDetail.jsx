@@ -1,55 +1,43 @@
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useEmployee } from "../hooks/useEmployees";
-import Card from "../components/ui/Card";
-import EmployeeDetailToolbar from "../components/employee/EmployeeDetailToolbar";
-import EmployeeHeader from "../components/employee/EmployeeHeader";
-import EmployeeDetailsCard from "../components/employee/EmployeeDetailsCard";
-import EmployeeProjectsCard from "../components/employee/EmployeeProjectsCard";
+import EmployeeDetailToolbar from "../components/employeeDetail/EmployeeDetailToolbar";
+import EmployeeHeaderSection from "../components/employeeDetail/EmployeeHeaderSection";
+import EmployeePersonalCard from "../components/employeeDetail/EmployeePersonalCard";
+import EmployeeContactCard from "../components/employeeDetail/EmployeeContactCard";
+import EmployeeGovIdsCard from "../components/employeeDetail/EmployeeGovIdsCard";
+import EmployeeEmploymentCard from "../components/employeeDetail/EmployeeEmploymentCard";
+import EmployeeProjectsCard from "../components/employeeDetail/EmployeeProjectsCard";
+import { EmployeeDetailSkeleton } from "@/components/skeleton/EmployeeDetailSkeleton";
+import { EmployeeErrorCard } from "@/components/error/EmployeeErrorCard";
+import EmployeeInfoCard from "@/components/employeeDetail/EmployeeInfoCard";
 
 function EmployeeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: employee, isPending, isError, error } = useEmployee(id);
 
-  const goEdit = () => navigate(`/employee/${employee?.id ?? id}/edit`);
+  if (isPending) return <EmployeeDetailSkeleton />;
+  if (isError) return <EmployeeErrorCard error={error} />;
+
+  const goEdit = () => navigate(`/employee/${employee.id}/edit`);
 
   return (
     <>
-      {/* Toolbar: full width, so it sits at the top left */}
       <EmployeeDetailToolbar
         employee={employee}
         onDownloadCoe={() => {}}
         onEdit={goEdit}
       />
 
-      {/* Content: stays centered */}
-      <div className="mx-auto w-full max-w-[1600px] space-y-4">
-        {isPending ? (
-          <Card className="p-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
-            Loading…
-          </Card>
-        ) : isError ? (
-          <Card className="p-8 text-center">
-            <p className="font-medium text-zinc-900 dark:text-zinc-100">
-              {error.response?.data?.message ?? error.message ?? "Something went wrong"}
-            </p>
-            <Link
-              to="/employee"
-              className="mt-3 inline-block text-sm text-blue-600 hover:underline dark:text-blue-400"
-            >
-              Back to employees
-            </Link>
-          </Card>
-        ) : (
-          <>
-            <EmployeeHeader employee={employee} />
+      <EmployeeHeaderSection employee={employee} />
 
-            <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
-              <EmployeeDetailsCard employee={employee} onEdit={goEdit} />
-              <EmployeeProjectsCard projects={employee.projects ?? []} />
-            </div>
-          </>
-        )}
+      <div className="mx-auto mt-4 grid w-full max-w-[1600px] grid-cols-1 items-start gap-4 lg:grid-cols-2">
+        <EmployeeInfoCard employee={employee} />
+
+        <div className="space-y-4">
+          <EmployeeEmploymentCard employee={employee} />
+          <EmployeeProjectsCard projects={employee.projects} />
+        </div>
       </div>
     </>
   );

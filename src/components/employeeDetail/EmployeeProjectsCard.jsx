@@ -18,7 +18,7 @@ function EmployeeProjectsCard({ projects }) {
       ) : (
         <ul className="divide-y divide-zinc-200 overflow-hidden rounded-b-xl dark:divide-zinc-800">
           {projects.map((project) => (
-            <ProjectItem key={project.id} project={project} />
+            <ProjectItem key={project?.projectId} project={project} />
           ))}
         </ul>
       )}

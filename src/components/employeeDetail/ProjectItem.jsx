@@ -4,20 +4,20 @@ import Badge from "../ui/Badge";
 import { getProjectStatus } from "../../config/employeeStatus";
 
 function ProjectItem({ project }) {
-  const status = getProjectStatus(project.status);
+  const status = getProjectStatus(project?.projectStatus);
 
   return (
     <li>
       <Link
-        to={`/project/${project.id}`}
+        to={`/project/${project?.projectId}`}
         className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
       >
         <div className="min-w-0">
           <p className="truncate font-medium text-zinc-900 dark:text-zinc-100">
-            {project.name}
+            {project?.projectName}
           </p>
           <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
-            {project.role}
+            {project.projectPosition}
           </p>
         </div>
 
