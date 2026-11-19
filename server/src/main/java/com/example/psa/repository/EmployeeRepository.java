@@ -1,5 +1,6 @@
 package com.example.psa.repository;
 
+import com.example.psa.dto.Response.employee.EmployeeListResponse;
 import com.example.psa.dto.Response.search.EmployeeSearchResponse;
 import com.example.psa.entity.Employee;
 import org.springframework.data.domain.Page;
@@ -29,8 +30,14 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 """)
     Optional<Employee> findDetailsById(@Param("id") UUID id);
 
-    @EntityGraph(attributePaths = {"branch", "position"})
-    Page<Employee> findAll(Pageable pageable);
+    @Query("""
+            select new com.example.psa.dto.Response.employee.EmployeeListResponse(
+                        e.id, e.employeeNumber, concat(e.firstName, ' ', e.lastName), e.email, ep.name, e.department, e.phoneNum
+                        )
+            from Employee e
+            join e.position ep
+            """)
+    Page<EmployeeListResponse> findAllEmployeeList(Pageable pageable);
 
     boolean existsByEmployeeNumber(String employeeNumber);
     boolean existsByEmail(String email);

@@ -30,6 +30,8 @@ dist-ssr
 
 # BACKUP FILE LOCAL
 src/components/SidebarRelative.jsx
+.postman
+/postman
 
 # Spring Boot
 server/src/main/resources/application-local.properties

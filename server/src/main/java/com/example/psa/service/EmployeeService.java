@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,11 +71,10 @@ public class EmployeeService {
         return employeeRepository.search(term, PageRequest.of(0, size));
     }
 
-//  HELPER & FALLBACK METHOD (DB CALL) FOR getEmployees
+//  HELPER & FALLBACK METHOD (DB CALL) FOR getEmployeesListing
     private PageResponse<EmployeeListResponse> fetchEmployeesListFromDb(Pageable pageable) {
         return PageResponse.from(
-                employeeRepository.findAll(pageable)
-                        .map(EmployeeListResponse::from)
+                employeeRepository.findAllEmployeeList(pageable)
         );
     }
 }
