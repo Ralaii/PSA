@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState } from "react";
 import EmployeeToolbar from "../components/employee/EmployeeToolbar";
 import { usePagination } from "../hooks/usePagination";
 import { useSelection } from "../hooks/useSelection";
@@ -11,40 +11,34 @@ const PAGE_SIZE = 25;
 const FILTER_DEFAULTS = { q: "" };
 
 function Employee() {
-
   const navigate = useNavigate();
   const { search } = useLocation();
 
   const goToDetail = (e) => navigate({ pathname: `/employee/${e.id}`, search });
-  const { data: employees = [], isPending, isError } = useEmployees();
 
   const { values, resetKey } = useQueryParams(FILTER_DEFAULTS);
-  const { q } = values;
-
   const selection = useSelection();
+  const [page, setPage] = useState(0);
 
-  const filtered = useMemo(() => {
-    const term = q.trim().toLowerCase();
-    if (!term) return employees;
-    return employees.filter((e) =>
-      `${e.name ?? ""} ${e.email ?? ""} ${e.employeeNumber ?? ""}`
-        .toLowerCase()
-        .includes(term)
-    );
-  }, [employees, q]);
+  const { data, isPending, isError } = useEmployees({
+    page, size: PAGE_SIZE, q: values.q.trim(),
+  });
 
-  const pager = usePagination(filtered, PAGE_SIZE, {
+  const employees = data?.content ?? [];
+
+  const pager = usePagination(employees, PAGE_SIZE, {
     resetKey,
     onPageChange: selection.clear,
+    page,
+    setPage,
+    serverTotal: data?.totalElements ?? 0
   });
   const visible = pager.pageItems;
 
-  const allSelected =
-    visible.length > 0 && visible.every((e) => selection.selected.has(e.id));
+  const allSelected = visible.length > 0 && visible.every((e) => selection.selected.has(e.id));
   const someSelected = selection.size > 0 && !allSelected;
 
-  const toggleAll = () =>
-    allSelected ? selection.clear() : selection.setAll(visible.map((e) => e.id));
+  const toggleAll = () => allSelected ? selection.clear() : selection.setAll(visible.map((e) => e.id));
 
   return (
     <div>
@@ -54,7 +48,7 @@ function Employee() {
         onNext={pager.next}
         allSelected={allSelected}
         someSelected={someSelected}
-        canSelect={filtered.length > 0}
+        canSelect={visible.length > 0}
         onToggleAll={toggleAll}
       />
 

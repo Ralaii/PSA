@@ -35,7 +35,13 @@ public class EmployeeService {
     }
 
 //  FETCH EMPLOYEES LISTS
-    public PageResponse<EmployeeListResponse> getEmployeesList(Pageable pageable) {
+    public PageResponse<EmployeeListResponse> getEmployeesList(String q, Pageable pageable) {
+        String term = (q == null) ? "" : q.trim();
+
+        if (!term.isEmpty()) {
+            return searchEmployeesFromDb(term, pageable);
+        }
+
         String key = pageable.getPageNumber() + ":" + pageable.getPageSize() + ':' + pageable.getSort();
         return redisCache.getOrLoad(
                 "employeeList",
@@ -43,6 +49,13 @@ public class EmployeeService {
                 new TypeReference<PageResponse<EmployeeListResponse>>() {},
                 Duration.ofHours(1),
                 () -> fetchEmployeesListFromDb(pageable)
+        );
+    }
+
+    private PageResponse<EmployeeListResponse> searchEmployeesFromDb(String term, Pageable pageable) {
+        return PageResponse.from(
+                employeeRepository.searchPage(term, pageable)
+                        .map(EmployeeListResponse::from)
         );
     }
 

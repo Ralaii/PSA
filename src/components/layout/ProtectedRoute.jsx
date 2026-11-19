@@ -33,6 +33,10 @@ function ProtectedRoute({ roles }) {
     return <Outlet />;
   }
 
+  if (me === null) {
+    return <Navigate to={"/login"} state={{from: location}} replace/>
+  }
+
   if (error?.status === 401) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

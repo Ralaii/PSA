@@ -1,12 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { employeeService } from "../services/employeeService";
 
 const KEY = ["employees"];
 
-export const useEmployees = () => {
+export const useEmployees = ({ page = 0, size = 25, q = ""} = {}) => {
   return useQuery({
-    queryKey: KEY,
-    queryFn: () => employeeService.getAll(),
+    queryKey: [...KEY, { page, size, q }],
+    queryFn: () => employeeService.getAll({ page, size, q}),
+    placeholderData: keepPreviousData,
   });
 };
 

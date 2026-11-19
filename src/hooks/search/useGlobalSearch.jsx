@@ -15,7 +15,7 @@ export function useGlobalSearch(query = "") {
       queryFn: () => s.search(term),
       enabled,
       staleTime: 30_000,
-      placeholderData: keepPreviousData, // keeps old results while typing
+      placeholderData: keepPreviousData,
     })),
   });
 

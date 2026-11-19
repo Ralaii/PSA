@@ -25,8 +25,8 @@ public class EmployeeController {
     private final EmployeeUpdateService employeeUpdateService;
 
     @GetMapping
-    public PageResponse<EmployeeListResponse> getEmployeesList(@PageableDefault(size = 25, sort = "employeeNumber")Pageable pageable){
-        return employeeService.getEmployeesList(pageable);
+    public PageResponse<EmployeeListResponse> getEmployeesList(@RequestParam(required = false) String q,@PageableDefault(size = 25, sort = "employeeNumber")Pageable pageable){
+        return employeeService.getEmployeesList(q, pageable);
     }
 
     @GetMapping("/{id}")
