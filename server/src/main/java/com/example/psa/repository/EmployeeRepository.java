@@ -2,8 +2,6 @@ package com.example.psa.repository;
 
 import com.example.psa.dto.Response.search.EmployeeSearchResponse;
 import com.example.psa.entity.Employee;
-import com.example.psa.entity.User;
-import jakarta.validation.constraints.Email;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -16,7 +14,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
-    Optional<Employee> findByUserId(UUID userId);
+    @Query("""
+    select concat(e.firstName, ' ', e.lastName)
+    from Employee e
+    where e.user.id = :userId
+""")
+    Optional<String> findEmployeeNameByUserId(@Param("userId") UUID userId);
 
     @Query("""
         select e from Employee e
@@ -30,17 +33,27 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     Page<Employee> findAll(Pageable pageable);
 
     boolean existsByEmployeeNumber(String employeeNumber);
-    boolean existsByEmail(@Email String email);
+    boolean existsByEmail(String email);
 
     @Query("""
     select new com.example.psa.dto.Response.search.EmployeeSearchResponse(
-        e.id, e.employeeNumber, concat(e.firstName, ' ', e.lastName), e.email
+        e.id, e.employeeNumber, concat(e.firstName, ' ', e.lastName), e.email, p.name
     )
     from Employee e
+    join e.position p
     where lower(concat(e.firstName, ' ', e.lastName)) like lower(concat('%', :q, '%'))
     or lower(e.employeeNumber) like lower(concat('%', :q, '%'))
     or lower(e.email) like lower(concat('%', :q, '%'))
-    order by e.firstName, e.lastName, e.employeeNumber, e.email
+    or lower(p.name) like lower(concat('%', :q, '%'))
 """)
     List<EmployeeSearchResponse> search(@Param("q") String q, Pageable pageable);
+
+    @Query("""
+    select e
+    from Employee e
+    where lower(concat(e.firstName, ' ', e.lastName)) like lower(concat('%', :q, '%'))
+    or lower (e.employeeNumber) like lower(concat('%', :q, '%'))
+    or lower (e.email) like lower(concat('%', :q, '%'))
+""")
+    Page<Employee> searchPage(@Param("q") String q, Pageable pageable);
 }

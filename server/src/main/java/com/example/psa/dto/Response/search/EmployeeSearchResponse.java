@@ -6,6 +6,7 @@ public record EmployeeSearchResponse(
         UUID id,
         String employeeNum,
         String name,
-        String email
+        String email,
+        String position
 ) {
 }

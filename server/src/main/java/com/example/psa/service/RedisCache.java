@@ -2,12 +2,16 @@ package com.example.psa.service;
 
 import com.example.psa.exception.RedisCacheErrorHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Component
@@ -40,5 +44,23 @@ public class RedisCache {
             }
         }
         return freshData;
+    }
+
+    public void evictAll(String cacheName) {
+        try {
+            List<String> keys = new ArrayList<>();
+            ScanOptions options = ScanOptions.scanOptions()
+                    .match(cacheName + "::*")
+                    .count(100)
+                    .build();
+            try (Cursor<String> cursor = redis.scan(options)) {
+                cursor.forEachRemaining(keys::add);
+            }
+            if (!keys.isEmpty()) {
+                redis.delete(keys);
+            }
+        } catch (Exception e) {
+            errorHandler.handleManualError("EVICT", new RuntimeException(e), cacheName, "*");
+        }
     }
 }

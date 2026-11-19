@@ -5,10 +5,9 @@ import com.example.psa.dto.Request.RegisterRequest;
 import com.example.psa.dto.Response.auth.LoginResult;
 import com.example.psa.dto.Response.auth.RegisterResponse;
 import com.example.psa.dto.Response.auth.ResponseMe;
-import com.example.psa.entity.Employee;
 import com.example.psa.entity.User;
 import com.example.psa.entity.UserSession;
-import com.example.psa.enums.Role;
+import com.example.psa.exception.UsernameTakenException;
 import com.example.psa.repository.EmployeeRepository;
 import com.example.psa.repository.SessionRepository;
 import com.example.psa.repository.UserRepository;
@@ -16,6 +15,7 @@ import com.example.psa.security.CustomUserDetails;
 import com.example.psa.security.JwtUtil;
 import com.example.psa.security.JwtUtil.TokenClaims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
@@ -39,21 +38,21 @@ public class AuthService {
     private final SessionRepository sessionRepository;
     private final EmployeeRepository employeeRepository;
 
+    @Transactional
     public RegisterResponse register(RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
-            throw new RuntimeException("Username already exists");
+            throw new UsernameTakenException("Username already exists");
         }
 
         String saltedAndHashedPassword = passwordEncoder.encode(request.password());
+        User user = request.toEntity(saltedAndHashedPassword);
 
-        User user = new User();
-        user.setUsername(request.username());
-        user.setPassword(saltedAndHashedPassword);
-        user.setRole(Role.USER);
-        user.setCreatedAt(LocalDateTime.now());
-        userRepository.save(user);
-
-        return new RegisterResponse(user.getUsername());
+        try {
+            User savedUser = userRepository.saveAndFlush(user);
+            return new RegisterResponse(savedUser.getUsername());
+        } catch (DataIntegrityViolationException e) {
+            throw new UsernameTakenException("Username already exists");
+        }
     }
 
     @Transactional
@@ -84,16 +83,20 @@ public class AuthService {
                 user.getRole()
         );
 
-        Employee employee = employeeRepository.findByUserId(user.getId()).orElse(null);
+        String name = employeeRepository
+                .findEmployeeNameByUserId(user.getId())
+                .orElse(user.getUsername());
+
         return new LoginResult(
                 jwt,
-                ResponseMe.from(user, employee)
+                ResponseMe.from(user, name)
         );
     }
 
     @Transactional(readOnly = true)
     public ResponseMe getCurrentUser(TokenClaims claims) {
-        Employee employee = employeeRepository.findByUserId(claims.userId()).orElse(null);
-        return ResponseMe.from(claims, employee);
+        String name = employeeRepository.findEmployeeNameByUserId(claims.userId()).orElse(claims.username());
+
+        return ResponseMe.from(claims, name);
     }
 }

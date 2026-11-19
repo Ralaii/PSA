@@ -29,7 +29,7 @@ function EmployeeRow({ employee: e, selected, onToggleSelect, onEdit, onDelete, 
 
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
-          <EmployeeAvatar id={e.id} name={e.name} />
+          
           <span className="whitespace-nowrap text-sm text-zinc-700 dark:text-zinc-200">
             {e.name}
           </span>
@@ -50,7 +50,7 @@ function EmployeeRow({ employee: e, selected, onToggleSelect, onEdit, onDelete, 
         </a>
       </td>
 
-      <td className={`${td} whitespace-nowrap`}>{e.mobile}</td>
+      <td className={`${td} whitespace-nowrap`}>{e.phoneNum}</td>
 
       <td onClick={stop} className="px-4 py-3">
         <EmployeeRowActions

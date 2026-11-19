@@ -12,6 +12,8 @@ public record EmployeeListResponse(
         String name,
         String email,
         String position,
+        String department,
+        String phoneNum,
         String branch,
         EmploymentStatus status,
         EmploymentType employmentType
@@ -24,6 +26,8 @@ public record EmployeeListResponse(
                 name,
                 e.getEmail(),
                 e.getPosition().getName(),
+                e.getDepartment(),
+                e.getPhoneNum(),
                 e.getBranch() != null ? e.getBranch().getName() : null,
                 e.getStatus(),
                 e.getEmploymentType()

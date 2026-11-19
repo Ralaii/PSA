@@ -46,6 +46,9 @@ public class Employee {
     @JoinColumn(name = "position_id")
     private EmployeePosition position;
 
+    @Column(name = "department")
+    private String department;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")
     private Branch branch;

@@ -7,7 +7,7 @@ export const searchSources = [
     label: "Employees",
     search: (q) => employeeService.search(q),
     title: (e) => e.name,
-    subtitle: (e) => `${e.employeeNumber} · ${e.position}`,
+    subtitle: (e) => `${e.employeeNum} · ${e.position}`,
     to: (e) => `/employee/${e.id}`,
   },
   {

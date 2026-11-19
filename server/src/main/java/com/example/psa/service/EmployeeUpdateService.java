@@ -8,6 +8,7 @@ import com.example.psa.exception.DuplicateResourceException;
 import com.example.psa.repository.EmployeePositionRepository;
 import com.example.psa.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,11 @@ import java.util.function.Consumer;
 public class EmployeeUpdateService {
     private final EmployeeRepository employeeRepository;
     private final EmployeePositionRepository employeePositionRepository;
+    private final RedisCache redisCache;
 
     @Transactional
     @PreAuthorize("hasAnyRole ('ADMIN', 'HR')")
+    @CacheEvict(value = "employee", key = "#id")
     public UpdateEmployeeResponse updateEmployee(UUID id, UpdateEmployeeRequest req) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
 
@@ -32,6 +35,7 @@ public class EmployeeUpdateService {
         applyRequiredFields(employee, req);
         applyOptionalFields(employee, req);
 
+        redisCache.evictAll("employeeList");
         return UpdateEmployeeResponse.from(employee);
     }
 
