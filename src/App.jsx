@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import MainLayout from "./components/layout/MainLayout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,7 +12,6 @@ import Settings from "./pages/Settings";
 import EmployeeDetail from "./pages/EmployeeDetail";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import GuestRoute from "./components/layout/GuestRoute";
-import Home from "./pages/Home";
 
 function App() {
   return(
@@ -29,7 +28,7 @@ function App() {
 
         {/* NOT FOUND ROUTE STILL DECIDING WHAT TO DO */}
 
-          <Route path="/" element={<Home/>}/>
+      <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
 
         {/* MAIN ROUTES OF THE LOGIN */}
         <Route element={<ProtectedRoute/>}>

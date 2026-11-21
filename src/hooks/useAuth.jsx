@@ -11,8 +11,8 @@ function useAuth() {
 
   const loginMutation = useMutation({
   mutationFn: loginRequest,
-  onSuccess: (data) => {
-    queryClient.setQueryData(["me"], data);
+  onSuccess: async (data) => {
+    await queryClient.setQueryData(["me"], data);
     toast.success(`Welcome back! ${data.name}`);
     navigate(from, { replace: true });
   },

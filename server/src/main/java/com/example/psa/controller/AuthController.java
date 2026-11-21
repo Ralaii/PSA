@@ -10,9 +10,7 @@ import com.example.psa.security.JwtUtil.TokenClaims;
 import com.example.psa.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +42,14 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseMe me(@AuthenticationPrincipal TokenClaims claims) {
         return authService.getCurrentUser(claims);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal TokenClaims claims) {
+        ResponseCookie clearedCookie = authService.logoutUser(claims);
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, clearedCookie.toString())
+                .build();
     }
 }

@@ -37,22 +37,21 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                         .ignoringRequestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout")
                 )
-                .sessionManagement(session -> session
+                .sessionManagement( session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
-                .authorizeHttpRequests(auth -> auth
-                        // Preflight requests never carry credentials.
+                .authorizeHttpRequests(
+                        auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Narrow on purpose: a future /api/auth/me should NOT be public by accident.
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/error").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout", "/error").permitAll()
                         .requestMatchers("/api/employees/**").hasAnyRole("ADMIN", "HR") //RESTRICT ALL PATH AFTER /**
                         .requestMatchers("/api/project/**").hasAnyRole("ADMIN", "HR")
                         .requestMatchers(HttpMethod.PATCH, "/api/employees/{id}").hasAnyRole("ADMIN", "HR")
                         .requestMatchers(HttpMethod.POST, "/api/employees/generate/coe").hasAnyRole("ADMIN", "HR") //REDUNDANT FOR NOW BUT FUTURE PROOFING IN FOR REFACTORING IT LATER
-                        .anyRequest().authenticated())
-                // Order: rate limit -> JWT -> UsernamePasswordAuthenticationFilter -> Filter CsrfCookies
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(rateLimitFilter, JwtFilter.class)
                 .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);

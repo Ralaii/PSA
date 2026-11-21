@@ -8,6 +8,7 @@ import com.example.psa.dto.Response.auth.ResponseMe;
 import com.example.psa.entity.User;
 import com.example.psa.entity.UserSession;
 import com.example.psa.exception.UsernameTakenException;
+import com.example.psa.repository.AuthRepository;
 import com.example.psa.repository.EmployeeRepository;
 import com.example.psa.repository.SessionRepository;
 import com.example.psa.repository.UserRepository;
@@ -16,6 +17,8 @@ import com.example.psa.security.JwtUtil;
 import com.example.psa.security.JwtUtil.TokenClaims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,6 +40,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final SessionRepository sessionRepository;
     private final EmployeeRepository employeeRepository;
+    private final AuthRepository authRepository;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
@@ -98,5 +102,19 @@ public class AuthService {
         String name = employeeRepository.findEmployeeNameByUserId(claims.userId()).orElse(claims.username());
 
         return ResponseMe.from(claims, name);
+    }
+
+    @Transactional
+    public ResponseCookie logoutUser(TokenClaims claims) {
+        if (claims != null && claims.sessionId() != null) {
+            authRepository.revokeSession(claims.sessionId(), Instant.now());
+        }
+        return ResponseCookie.from("access_token", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
     }
 }
