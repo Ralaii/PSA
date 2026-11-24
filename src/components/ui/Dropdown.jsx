@@ -21,7 +21,6 @@ function Dropdown({ trigger, children, panelClassName = "sm:w-96" }) {
   return (
     <div ref={ref} className="relative">
       {trigger({ open, toggle: () => setOpen((prev) => !prev) })}
-
       {open && (
         <div
           className={`fixed inset-x-3 top-[4.5rem] z-50 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 dark:border-zinc-700 dark:bg-zinc-900 ${panelClassName}`}

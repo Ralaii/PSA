@@ -15,7 +15,7 @@ function SelectAllCheckbox({ checked, indeterminate, onChange, disabled }) {
       onChange={onChange}
       disabled={disabled}
       aria-label="Select all"
-      className="size-4 cursor-pointer accent-blue-600"
+      className="size-4 cursor-pointer accent-blue-600 dark:accent-zinc-400"
     />
   );
 }
