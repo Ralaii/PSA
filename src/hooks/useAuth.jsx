@@ -18,7 +18,7 @@ function useAuth() {
 
     if (!authenticatedRole.includes(data.role)) {
       toast.error("You don't have permission to access this page")
-      navigate("/*", { replace: true})
+      navigate("/unauthorized", { replace: true})
       return;
     }
 
