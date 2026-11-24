@@ -14,14 +14,14 @@ function EmployeeRow({ employee: e, selected, onToggleSelect, onEdit, onDelete, 
     >
       <td
         onClick={stop}
-        className="w-10 border-l-2 border-transparent py-3 pl-4 pr-0 group-hover:border-blue-600 dark:group-hover:border-blue-400"
+        className="w-10 border-l-2 border-transparent py-3 pl-4 pr-0 group-hover:border-blue-600 dark:group-hover:border-zinc-400"
       >
         <input
           type="checkbox"
           aria-label={`Select ${e.name}`}
           checked={selected}
           onChange={() => onToggleSelect(e.id)}
-          className="size-4 cursor-pointer"
+          className="size-4 cursor-pointer dark:accent-zinc-400"
         />
       </td>
 

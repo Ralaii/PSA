@@ -18,8 +18,9 @@ import com.example.psa.security.JwtUtil.TokenClaims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Objects;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -69,9 +70,16 @@ public class AuthService {
                     )
             );
 
-        CustomUserDetails userDetails = (CustomUserDetails) accountAuthentication.getPrincipal();
-        Objects.requireNonNull(userDetails);
+        Object principal = accountAuthentication.getPrincipal();
+        if (!(principal instanceof  CustomUserDetails userDetails)) {
+            throw new BadCredentialsException("Bad credentials");
+        }
+
         User user = userDetails.getUser();
+
+        if (!hasAuthorizedRole(userDetails)) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
 
         Instant now = Instant.now();
         UserSession session = new UserSession();
@@ -116,5 +124,13 @@ public class AuthService {
                 .maxAge(0)
                 .sameSite("Strict")
                 .build();
+    }
+
+    private boolean hasAuthorizedRole(CustomUserDetails userDetails) {
+        return userDetails.getAuthorities()
+                .stream()
+                .anyMatch(a ->
+                        List.of("ROLE_ADMIN", "ROLE_HR")
+                                .contains(a.getAuthority()));
     }
 }

@@ -13,6 +13,7 @@ import EmployeeDetail from "./pages/EmployeeDetail";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import GuestRoute from "./components/layout/GuestRoute";
 
+
 function App() {
   return(
     <BrowserRouter>
@@ -26,12 +27,11 @@ function App() {
           </Route>
         </Route>
 
-        {/* NOT FOUND ROUTE STILL DECIDING WHAT TO DO */}
 
       <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
 
         {/* MAIN ROUTES OF THE LOGIN */}
-        <Route element={<ProtectedRoute/>}>
+        <Route element={<ProtectedRoute roles={['HR', 'ADMIN', 'USER']}/>}>
           <Route element={<MainLayout/>}>
         
             <Route path="/dashboard" element={<Dashboard/>}/>
@@ -52,6 +52,8 @@ function App() {
 
           </Route>
         </Route>
+        
+        {/* NOT FOUND ROUTE STILL DECIDING WHAT TO DO */}
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>
