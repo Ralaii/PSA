@@ -3,35 +3,36 @@ import { Link } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { inputClass } from "../components/styles";
 import useAuth from "../hooks/useAuth";
+import { zodResolver } from "@hookform/resolvers/zod"; 
 import SpinnerOverlay from "../components/ui/SpinnerOverlay";
+import { useForm } from "react-hook-form"
+import { loginSchema } from "@/config/auth/authSchema";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ 
-    identifier: "", 
-    password: "" 
-  });
+
   const { 
     login, 
     loading, 
     error 
   } = useAuth();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: ""
+    },
+  });
 
-    setForm((prev) => ({ 
-      ...prev, 
-      [name]: value 
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    login(form);
-  };
+  const onSubmit = (data) => login({
+    identifier: data.username,
+    password: data.password
+  });
 
   return (
     <>
@@ -44,20 +45,24 @@ function Login() {
         </p>
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div>
-          <label htmlFor="identifier" className="sr-only">Username</label>
+          <label htmlFor="username" className="sr-only">Username</label>
           <input
-            id="identifier"
-            name="identifier"
+            id="username"
             type="text"
             placeholder="Username"
             autoComplete="username"
-            required
-            value={form.identifier}
-            onChange={handleChange}
+            {...register("username")}
             className={inputClass}
           />
+          {
+            errors.username && (
+              <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.username.message}
+              </p>
+            )
+          }
         </div>
 
         <div>
@@ -65,13 +70,10 @@ function Login() {
           <div className="relative">
             <input
               id="password"
-              name="password"
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               autoComplete="current-password"
-              required
-              value={form.password}
-              onChange={handleChange}
+              {...register("password")}
               className={`${inputClass} pr-11`}
             />
             <button
@@ -83,6 +85,13 @@ function Login() {
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
+          {
+              errors.password && (
+                <p role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.password.message}
+                </p>
+              )
+            }
           <p
             to="/forgot-password"
             className="mt-2 block text-right text-sm"

@@ -1,11 +1,11 @@
 package com.example.psa.controller;
 
-import com.example.psa.dto.Request.UpdateEmployeeRequest;
-import com.example.psa.dto.Response.employee.EmployeeDetailResponse;
-import com.example.psa.dto.Response.employee.EmployeeListResponse;
-import com.example.psa.dto.Response.common.PageResponse;
-import com.example.psa.dto.Response.employee.UpdateEmployeeResponse;
-import com.example.psa.dto.Response.search.EmployeeSearchResponse;
+import com.example.psa.dto.request.UpdateEmployeeRequest;
+import com.example.psa.dto.response.employee.EmployeeDetailResponse;
+import com.example.psa.dto.response.employee.EmployeeListResponse;
+import com.example.psa.dto.response.common.PageResponse;
+import com.example.psa.dto.response.employee.UpdateEmployeeResponse;
+import com.example.psa.dto.response.search.EmployeeSearchResponse;
 import com.example.psa.service.EmployeeService;
 import com.example.psa.service.EmployeeUpdateService;
 import jakarta.validation.Valid;
@@ -25,7 +25,9 @@ public class EmployeeController {
     private final EmployeeUpdateService employeeUpdateService;
 
     @GetMapping
-    public PageResponse<EmployeeListResponse> getEmployeesList(@RequestParam(required = false) String q,@PageableDefault(size = 25, sort = "employeeNumber")Pageable pageable){
+    public PageResponse<EmployeeListResponse> getEmployeesList(
+            @RequestParam(required = false) String q,
+            @PageableDefault(size = 25, sort = "employeeNumber")Pageable pageable){
         return employeeService.getEmployeesList(q, pageable);
     }
 

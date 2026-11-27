@@ -1,9 +1,10 @@
 package com.example.psa.controller;
 
-import com.example.psa.dto.Response.common.PageResponse;
-import com.example.psa.dto.Response.project.ProjectDetailResponse;
-import com.example.psa.dto.Response.project.ProjectListResponse;
-import com.example.psa.dto.Response.search.ProjectSearchResponse;
+import com.example.psa.dto.response.common.PageResponse;
+import com.example.psa.dto.response.project.ProjectDetailResponse;
+import com.example.psa.dto.response.project.ProjectListResponse;
+import com.example.psa.dto.response.search.ProjectSearchResponse;
+import com.example.psa.enums.ProjectStatus;
 import com.example.psa.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +21,11 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping
-    public PageResponse<ProjectListResponse> getProjectList(@PageableDefault(size = 25) Pageable pageable){
-        return projectService.getProjectLists(pageable);
+    public PageResponse<ProjectListResponse> getProjectList(
+            @RequestParam(required = false) ProjectStatus projectStatus,
+            @RequestParam(required = false) String q,
+            @PageableDefault(size = 25, sort = "projectNumber") Pageable pageable){
+        return projectService.getProjectLists(q, projectStatus, pageable);
     }
 
     @GetMapping("/{id}")

@@ -1,16 +1,15 @@
 package com.example.psa.service;
 
-import com.example.psa.dto.Response.employee.EmployeeDetailResponse;
-import com.example.psa.dto.Response.employee.EmployeeListResponse;
-import com.example.psa.dto.Response.common.PageResponse;
-import com.example.psa.dto.Response.search.EmployeeSearchResponse;
+import com.example.psa.dto.response.employee.EmployeeDetailResponse;
+import com.example.psa.dto.response.employee.EmployeeListResponse;
+import com.example.psa.dto.response.common.PageResponse;
+import com.example.psa.dto.response.search.EmployeeSearchResponse;
 import com.example.psa.entity.Employee;
 import com.example.psa.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

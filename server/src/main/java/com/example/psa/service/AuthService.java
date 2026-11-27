@@ -1,10 +1,10 @@
 package com.example.psa.service;
 
-import com.example.psa.dto.Request.LoginRequest;
-import com.example.psa.dto.Request.RegisterRequest;
-import com.example.psa.dto.Response.auth.LoginResult;
-import com.example.psa.dto.Response.auth.RegisterResponse;
-import com.example.psa.dto.Response.auth.ResponseMe;
+import com.example.psa.dto.request.LoginRequest;
+import com.example.psa.dto.request.RegisterRequest;
+import com.example.psa.dto.response.auth.LoginResult;
+import com.example.psa.dto.response.auth.RegisterResponse;
+import com.example.psa.dto.response.auth.ResponseMe;
 import com.example.psa.entity.User;
 import com.example.psa.entity.UserSession;
 import com.example.psa.exception.UsernameTakenException;

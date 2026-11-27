@@ -2,7 +2,7 @@ import EmployeeHeader from "./EmployeeHeader";
 
 function EmployeeHeaderSection({ employee }) {
   return (
-      <EmployeeHeader employee={employee} />
+      <EmployeeHeader employee={employee}/>
   );
 }
 

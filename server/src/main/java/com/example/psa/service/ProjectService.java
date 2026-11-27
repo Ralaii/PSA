@@ -1,20 +1,22 @@
 package com.example.psa.service;
 
-import com.example.psa.dto.Response.common.PageResponse;
-import com.example.psa.dto.Response.project.ProjectDetailResponse;
-import com.example.psa.dto.Response.project.ProjectListResponse;
-import com.example.psa.dto.Response.project.ProjectMemberResponse;
-import com.example.psa.dto.Response.search.ProjectSearchResponse;
+import com.example.psa.dto.response.common.PageResponse;
+import com.example.psa.dto.response.project.ProjectDetailResponse;
+import com.example.psa.dto.response.project.ProjectListResponse;
+import com.example.psa.dto.response.project.ProjectMemberResponse;
+import com.example.psa.dto.response.search.ProjectSearchResponse;
 import com.example.psa.entity.Project;
+import com.example.psa.enums.ProjectStatus;
 import com.example.psa.repository.ProjectRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.type.TypeReference;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
@@ -35,14 +37,33 @@ public class ProjectService {
     }
 
 //  FETCH PROJECTS LISTS
-    public PageResponse<ProjectListResponse> getProjectLists(Pageable pageable) {
-        String key = pageable.getPageNumber() + ":"  + pageable.getPageSize() + ":"  + pageable.getSort();
+    public PageResponse<ProjectListResponse> getProjectLists(String q, ProjectStatus status,Pageable pageable) {
+        String term = (q == null) ? "" : q.trim();
+
+        if (!term.isEmpty()) {
+            return searchProjectsFromDb(term, status, pageable);
+        }
+
+        String key = (status == null ? "ALL" : status.name())
+                + ":" + pageable.getPageNumber()
+                + ":" + pageable.getPageSize()
+                + ":" + pageable.getSort();
+
         return redisCache.getOrLoad(
                 "projectList",
                 key,
                 new TypeReference<PageResponse<ProjectListResponse>>() {},
                 Duration.ofHours(1),
-                () -> findProjectList(pageable)
+                () -> fetchProjectsFromDb(status, pageable)
+        );
+    }
+
+    private PageResponse<ProjectListResponse> searchProjectsFromDb(String term, ProjectStatus status, Pageable pageable) {
+        Page<Project> page = (status == null)
+                ? projectRepository.searchProjectPage(term, pageable)
+                : projectRepository.searchProjectPageByStatus(term, status, pageable);
+        return PageResponse.from(
+                page.map(ProjectListResponse::from)
         );
     }
 
@@ -58,10 +79,10 @@ public class ProjectService {
     }
 
 //  HELPER METHOD FOR PROJECT LISTS
-    private PageResponse<ProjectListResponse> findProjectList(Pageable pageable) {
-        return PageResponse.from(
-                projectRepository.findAll(pageable)
-                        .map(ProjectListResponse::from)
-        );
+    private PageResponse<ProjectListResponse> fetchProjectsFromDb(ProjectStatus status,Pageable pageable) {
+        Page<ProjectListResponse> page = (status == null)
+                ? projectRepository.findAllProjectList(pageable)
+                : projectRepository.findProjectListByStatus(status, pageable);
+        return PageResponse.from(page);
     }
 }

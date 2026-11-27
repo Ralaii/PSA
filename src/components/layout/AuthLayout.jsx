@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import { Moon, Sun } from "lucide-react";
 import useTheme from "../../hooks/useTheme";
-import loginPhoto from "../../assets/pylon2022.jpg";
+import background from "../../assets/imgs/psa-bg.jpg"
 
 export default function AuthLayout({ children }) {
   const { isDark, toggleTheme } = useTheme();
@@ -9,7 +9,7 @@ export default function AuthLayout({ children }) {
   return (
     <div className="relative min-h-screen">
       <img
-        src={loginPhoto}
+        src={background}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
       />

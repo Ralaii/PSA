@@ -1,10 +1,11 @@
+import { Link } from "react-router";
 import EmployeeAvatar from "./EmployeeAvatar";
 import EmployeeRowActions from "./EmployeeRowActions";
 
 const td = "px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300";
 const stop = (ev) => ev.stopPropagation();
 
-function EmployeeRow({ employee: e, selected, onToggleSelect, onEdit, onDelete, onView }) {
+function EmployeeRow({ employee: e, selected, onToggleSelect, onEdit, onDelete, onView, onPreviewCoe, detailEmployee }) {
   return (
     <tr
       onClick={() => onView?.(e)}
@@ -28,12 +29,15 @@ function EmployeeRow({ employee: e, selected, onToggleSelect, onEdit, onDelete, 
       <td className={`${td} whitespace-nowrap font-mono`}>{e.employeeNumber}</td>
 
       <td className="px-4 py-3">
-        <div className="flex items-center gap-3">
+        <Link className="flex items-center gap-3"
+          to={detailEmployee(e)}
+          onClick={stop}
+        >
           
           <span className="whitespace-nowrap text-sm text-zinc-700 dark:text-zinc-200">
             {e.name}
           </span>
-        </div>
+        </Link>
       </td>
 
       <td className={`${td} whitespace-nowrap`}>{e.position}</td>
@@ -58,6 +62,7 @@ function EmployeeRow({ employee: e, selected, onToggleSelect, onEdit, onDelete, 
           onEdit={onEdit}
           onDelete={onDelete}
           onView={onView}
+          onPreviewCoe={onPreviewCoe}
         />
       </td>
     </tr>

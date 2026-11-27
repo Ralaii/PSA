@@ -15,10 +15,14 @@ import java.util.Map;
 public class PdfRenderer {
     private final TemplateEngine templateEngine;
 
+    public String renderHtml(String template, Map<String, Object> model) {
+        Context context = new Context();
+        context.setVariables(model);
+        return templateEngine.process(template, context);
+    }
+
     public byte[] render(String template, Map<String, Object> model) {
-        Context ctx = new Context();
-        ctx.setVariables(model);
-        String html = templateEngine.process(template, ctx);
+        String html = renderHtml(template, model);
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();

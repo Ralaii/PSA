@@ -5,14 +5,12 @@ import com.example.psa.entity.Project;
 import com.example.psa.entity.ProjectAssignment;
 import com.example.psa.enums.CivilStatus;
 import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 import com.example.psa.enums.ProjectStatus;
 import com.example.psa.repository.EmployeeRepository;
 import com.example.psa.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
@@ -57,8 +55,7 @@ public class DavDataSeeder implements CommandLineRunner {
         e.setGender("Male");
         e.setCivilStatus(CivilStatus.SINGLE);
         e.setHireDate(LocalDate.now());
-        e.setStatus(EmploymentStatus.REGULAR);
-        e.setEmploymentType(EmploymentType.FULL_TIME);
+        e.setStatus(EmploymentStatus.EMPLOYED);
         return e;
     }
 

@@ -24,7 +24,7 @@ function EmployeeHeader({ employee }) {
   const status = getEmployeeStatus(employee?.status);
 
   return (
-    <Card>
+    <Card className="mt-6">
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-blue-600/10 text-xl font-semibold text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">

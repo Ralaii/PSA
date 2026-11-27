@@ -1,10 +1,10 @@
-package com.example.psa.dto.Response.employee;
+package com.example.psa.dto.response.employee;
 
 import com.example.psa.entity.Branch;
 import com.example.psa.entity.Employee;
 import com.example.psa.enums.CivilStatus;
+import com.example.psa.enums.EmploymentCategory;
 import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +28,7 @@ public record EmployeeDetailResponse(
         String email,
         LocalDate hireDate,
         EmploymentStatus status,
-        EmploymentType employmentType,
+        EmploymentCategory category,
         List<AddressResponse> addresses,
         List<EducationResponse> education,
         List<EmployeeProjectResponse> projects
@@ -47,13 +47,13 @@ public record EmployeeDetailResponse(
                 e.getCivilStatus(),
                 e.getPagibigNum(),
                 e.getPhilhealthNum(),
-                e.getPhilsisNum(),
+                e.getPhilsysNum(),
                 e.getTelephoneNum(),
                 e.getPhoneNum(),
                 e.getEmail(),
                 e.getHireDate(),
                 e.getStatus(),
-                e.getEmploymentType(),
+                e.getEmploymentCategory(),
                 e.getAddresses().stream().map(AddressResponse::from).toList(),
                 e.getEducation().stream().map(EducationResponse::from).toList(),
                 e.getProjectAssignments().stream().map(EmployeeProjectResponse::from).toList());

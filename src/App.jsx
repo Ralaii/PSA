@@ -12,6 +12,8 @@ import Settings from "./pages/Settings";
 import EmployeeDetail from "./pages/EmployeeDetail";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import GuestRoute from "./components/layout/GuestRoute";
+import Project from "./pages/Project";
+import ProjectDetails from "./pages/ProjectDetails";
 
 
 function App() {
@@ -35,6 +37,8 @@ function App() {
           <Route element={<MainLayout/>}>
         
             <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/project" element={<Project/>}/>   
+            <Route path="/project/:id" element={<ProjectDetails />} />         
   {/* 
             <Route path="/inbox" element={<Inbox/>}/>
             <Route path="/inbox/:id" element={<InboxDetail/>}/> */}

@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export function EmployeeErrorCard({ error }) {
   const message =
     error?.response?.data?.message ?? error?.message ?? "Something went wrong";

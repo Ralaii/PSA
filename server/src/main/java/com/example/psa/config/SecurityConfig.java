@@ -13,8 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -42,19 +42,17 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
-                .authorizeHttpRequests(
-                        auth -> auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout", "/error").permitAll()
-                        .requestMatchers("/api/employees/**").hasAnyRole("ADMIN", "HR") //RESTRICT ALL PATH AFTER /**
-                        .requestMatchers("/api/project/**").hasAnyRole("ADMIN", "HR")
-                        .requestMatchers(HttpMethod.PATCH, "/api/employees/{id}").hasAnyRole("ADMIN", "HR")
-                        .requestMatchers(HttpMethod.POST, "/api/employees/generate/coe").hasAnyRole("ADMIN", "HR") //REDUNDANT FOR NOW BUT FUTURE PROOFING IN FOR REFACTORING IT LATER
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register", "/api/auth/logout", "/error").permitAll()
+                        .requestMatchers("/api/auth/me").authenticated()
+                        .requestMatchers("/api/employees/**", "/api/project/**", "/api/hr/**").hasAnyRole("ADMIN", "HR")
+                        .requestMatchers("/api/projects/**").hasAnyRole("ADMIN", "HR")
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(rateLimitFilter, JwtFilter.class)
-                .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);
+                .addFilterAfter(new CsrfCookieFilter(), SessionManagementFilter.class);
 
         return http.build();
     }

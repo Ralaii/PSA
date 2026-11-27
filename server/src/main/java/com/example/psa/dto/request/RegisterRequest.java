@@ -1,4 +1,4 @@
-package com.example.psa.dto.Request;
+package com.example.psa.dto.request;
 
 import com.example.psa.entity.User;
 import jakarta.validation.constraints.NotBlank;

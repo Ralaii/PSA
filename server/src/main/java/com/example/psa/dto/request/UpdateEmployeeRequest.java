@@ -1,8 +1,8 @@
-package com.example.psa.dto.Request;
+package com.example.psa.dto.request;
 
 import com.example.psa.enums.CivilStatus;
+import com.example.psa.enums.EmploymentCategory;
 import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
@@ -41,5 +41,5 @@ public record UpdateEmployeeRequest(
         String email,
 
         EmploymentStatus status,
-        EmploymentType employmentType
+        EmploymentCategory category
 ) {}

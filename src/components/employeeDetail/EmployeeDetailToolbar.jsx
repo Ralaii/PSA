@@ -1,41 +1,29 @@
-import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
-import {
-  BsArrowLeft,
-  BsDownload,
-  BsPencil,
-  BsThreeDotsVertical,
-  BsLink45Deg,
-} from "react-icons/bs";
-import { Toolbar, ToolButton, toolBtn } from "../ui/Toolbar";
+import { BsArrowLeft } from "react-icons/bs";
+import { FileText, FileSignature, Pencil } from "lucide-react";
+import { Toolbar, ToolButton } from "../ui/Toolbar";
 
-function EmployeeDetailToolbar({
-  employee,
-  onDownloadCoe,
-  coePending,
-  onEdit,
-}) {
+const buttonUI =
+  "inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 active:bg-blue-800 cursor-pointer sm:px-3 dark:bg-transparent dark:outline-1 dark:hover:bg-zinc-400 dark:active:bg-zinc-800";
+
+function ActionButton({ icon: Icon, label, onClick, className = "" }) {
+  return (
+    <button
+      type="button"
+      className={`${buttonUI} ${className}`}
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+    >
+      <Icon className="size-4 shrink-0" aria-hidden="true" />
+      <span className="hidden sm:inline">{label}</span>
+    </button>
+  );
+}
+
+function EmployeeDetailToolbar({ onEdit, onPreviewCoe, onViewContract }) {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onClick = (e) => !menuRef.current?.contains(e.target) && setMenuOpen(false);
-    const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
-    document.addEventListener("mousedown", onClick);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onClick);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [menuOpen]);
-
-  const copyLink = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setMenuOpen(false);
-  };
 
   return (
     <Toolbar
@@ -49,43 +37,17 @@ function EmployeeDetailToolbar({
 
           <span className="mx-1 h-5 w-px bg-zinc-200 dark:bg-zinc-700" />
 
-          <ToolButton
-            icon={<BsDownload />}
-            label="Download COE"
-            onClick={onDownloadCoe}
-            disabled={!employee || coePending}
-          />
-          <ToolButton
-            icon={<BsPencil />}
-            label="Edit details"
-            onClick={onEdit}
-            disabled={!employee}
-          />
-
-          <div ref={menuRef} className="relative">
-            <button
-              onClick={() => setMenuOpen((prev) => !prev)}
-              disabled={!employee}
-              aria-label="More"
-              aria-expanded={menuOpen}
-              title="More"
-              className={toolBtn}
-            >
-              <BsThreeDotsVertical />
-            </button>
-
-            {menuOpen && (
-              <div className="absolute left-0 top-full z-20 mt-1 w-48 overflow-hidden rounded-lg border border-zinc-200 bg-white py-1 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
-                <button
-                  onClick={copyLink}
-                  className="flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-left text-sm transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                >
-                  <BsLink45Deg className="text-lg" /> Copy link
-                </button>
-              </div>
-            )}
-          </div>
+          <ActionButton icon={FileText} label="Generate COE" onClick={onPreviewCoe} />
+          <ActionButton icon={FileSignature} label="View Contract" onClick={onViewContract} />
         </>
+      }
+      right={
+        <ActionButton
+          icon={Pencil}
+          label="Edit Employee Details"
+          onClick={onEdit}
+          className="mr-4"
+        />
       }
     />
   );

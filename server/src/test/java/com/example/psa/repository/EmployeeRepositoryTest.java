@@ -4,7 +4,6 @@ import com.example.psa.entity.Employee;
 import com.example.psa.entity.Project;
 import com.example.psa.entity.ProjectAssignment;
 import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
@@ -41,8 +40,7 @@ class EmployeeRepositoryTest {
         juan.setLastName("Dela Cruz");
         juan.setEmail("juan@example.com");
         juan.setHireDate(LocalDate.of(2022, 6, 1));
-        juan.setStatus(EmploymentStatus.REGULAR);
-        juan.setEmploymentType(EmploymentType.FULL_TIME);
+        juan.setStatus(EmploymentStatus.EMPLOYED);
         em.persist(juan);
 
         Project audit = new Project();

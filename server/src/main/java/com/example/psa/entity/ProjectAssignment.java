@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
 @Table(name = "project_assignment",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"project_id", "employee_id"}),
                 @UniqueConstraint(columnNames = {"project_id", "project_employee_num"})
         }
 )
@@ -30,6 +30,12 @@ public class ProjectAssignment {
     @Column(name = "project_employee_num")
     private String projectEmployeeNum;
 
-    @Column(name = "projectPosition")
+    @Column(name = "project_position")
     private String projectPosition;
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
 }

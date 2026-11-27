@@ -12,6 +12,8 @@ function EmployeeList({
   onEdit,
   onDelete,
   onView,
+  onPreviewCoe,
+  detailEmployee
 }) {
   if (isPending) {
     return <p className="py-10 text-center text-sm text-zinc-500">Loading employees...</p>;
@@ -49,6 +51,8 @@ function EmployeeList({
               onEdit={onEdit}
               onDelete={onDelete}
               onView={onView}
+              onPreviewCoe={onPreviewCoe}
+              detailEmployee={detailEmployee}
             />
           ))}
         </tbody>

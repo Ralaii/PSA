@@ -1,10 +1,9 @@
-package com.example.psa.dto.Response.employee;
+package com.example.psa.dto.response.employee;
 
 import com.example.psa.entity.Employee;
 import com.example.psa.entity.EmployeePosition;
 import com.example.psa.enums.CivilStatus;
 import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -27,7 +26,6 @@ public record UpdateEmployeeResponse(
         String phoneNum,
         String email,
         EmploymentStatus status,
-        EmploymentType employmentType,
         Instant updatedAt,
         String updatedBy
 ) {
@@ -43,13 +41,12 @@ public record UpdateEmployeeResponse(
                 e.getCivilStatus(),
                 e.getPagibigNum(),
                 e.getPhilhealthNum(),
-                e.getPhilsisNum(),
+                e.getPhilsysNum(),
                 e.getTinNum(),
                 e.getTelephoneNum(),
                 e.getPhoneNum(),
                 e.getEmail(),
                 e.getStatus(),
-                e.getEmploymentType(),
                 e.getUpdatedAt(),
                 e.getUpdatedBy()
         );

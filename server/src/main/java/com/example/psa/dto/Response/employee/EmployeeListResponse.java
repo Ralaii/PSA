@@ -1,8 +1,6 @@
-package com.example.psa.dto.Response.employee;
+package com.example.psa.dto.response.employee;
 
 import com.example.psa.entity.Employee;
-import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 
 import java.util.UUID;
 

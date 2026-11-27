@@ -1,7 +1,7 @@
 package com.example.psa.service;
 
-import com.example.psa.dto.Request.UpdateEmployeeRequest;
-import com.example.psa.dto.Response.employee.UpdateEmployeeResponse;
+import com.example.psa.dto.request.UpdateEmployeeRequest;
+import com.example.psa.dto.response.employee.UpdateEmployeeResponse;
 import com.example.psa.entity.Employee;
 import com.example.psa.entity.EmployeePosition;
 import com.example.psa.exception.DuplicateResourceException;
@@ -61,7 +61,7 @@ public class EmployeeUpdateService {
         setOptionalIfPresent(req.middleName(), e::setMiddleName);
         setOptionalIfPresent(req.pagibigNum(), e::setPagibigNum);
         setOptionalIfPresent(req.philhealthNum(), e::setPhilhealthNum);
-        setOptionalIfPresent(req.philsisNum(), e::setPhilsisNum);
+        setOptionalIfPresent(req.philsisNum(), e::setPhilsysNum);
         setOptionalIfPresent(req.tinNum(), e::setTinNum);
         setOptionalIfPresent(req.telephoneNum(), e::setTelephoneNum);
         setOptionalIfPresent(req.phoneNum(), e::setPhoneNum);
@@ -73,7 +73,6 @@ public class EmployeeUpdateService {
         setIfPresent(req.birthDate(), e::setBirthDate);
         setIfPresent(req.civilStatus(), e::setCivilStatus);
         setIfPresent(req.status(), e::setStatus);
-        setIfPresent(req.employmentType(), e::setEmploymentType);
 
         if (req.positionId() != null) {
             EmployeePosition position = employeePositionRepository.findById(req.positionId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee position not found"));
