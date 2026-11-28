@@ -28,4 +28,3 @@ export const projectService = {
   removeMember: (projectId, assignmentId) =>
     api.delete(`/api/project/${projectId}/members/${assignmentId}`),
 };
-
