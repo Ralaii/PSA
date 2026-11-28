@@ -19,3 +19,15 @@ export const useEmployee = (id) => {
     retry: false,
   });
 };
+
+export function useEmployeeSearch(q) {
+  const { data, isPending } = useEmployees({ page: 0, size: 20, q });
+  return {
+    isPending,
+    items: (data?.content ?? []).map((e) => ({
+      id: e.id,
+      title: e.name,
+      sub: [e.employeeNumber, e.department].filter(Boolean).join(" · "),
+    })),
+  };
+}
