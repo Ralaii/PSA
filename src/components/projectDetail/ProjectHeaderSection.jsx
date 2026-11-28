@@ -52,6 +52,14 @@ function ProjectHeaderSection({ project }) {
           value={`${memberCount} ${memberCount === 1 ? "member" : "members"}`}
         />
       </div>
+      {project.description && (
+        <div className="border-t border-zinc-200 px-5 py-4 dark:border-zinc-800">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">Description</p>
+          <p className="mt-1 whitespace-pre-line text-sm text-zinc-900 dark:text-zinc-100">
+            {project.description}
+          </p>
+        </div>
+      )}
     </Card>
   );
 }

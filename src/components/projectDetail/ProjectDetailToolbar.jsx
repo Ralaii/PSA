@@ -1,10 +1,10 @@
 import { useNavigate, useLocation } from "react-router";
 import { BsArrowLeft } from "react-icons/bs";
-import { FileDown, Users, Pencil } from "lucide-react";
+import { FileDown, Users, UserPlus, Pencil } from "lucide-react";
 import { Toolbar, ToolButton } from "../ui/Toolbar";
 import ActionButton from "../ui/ActionButton";
 
-function ProjectDetailToolbar({ onExport, onManageTeam, onEdit }) {
+function ProjectDetailToolbar({ onExport, onManageTeam, onAddMember, onEdit }) {
   const navigate = useNavigate();
   const { search } = useLocation();
 
@@ -22,6 +22,7 @@ function ProjectDetailToolbar({ onExport, onManageTeam, onEdit }) {
 
           <ActionButton icon={FileDown} label="Export Report" onClick={onExport} />
           <ActionButton icon={Users} label="Manage Team" onClick={onManageTeam} />
+          <ActionButton icon={UserPlus} label="Add Member" onClick={onAddMember} />
         </>
       }
       right={

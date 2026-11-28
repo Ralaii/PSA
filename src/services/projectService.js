@@ -18,4 +18,24 @@ export const projectService = {
 
   search: (q) =>
     api.get("/api/project/search", { params: { q } }).then((r) => r.data),
+
+  addMember: (projectId, body) =>
+  api.post(`/api/project/${projectId}/members`, body).then((r) => r.data),
+
+  updateMember: (projectId, assignmentId, body) =>
+    api.patch(`/api/project/${projectId}/members/${assignmentId}`, body).then((r) => r.data),
+
+  removeMember: (projectId, assignmentId) =>
+    api.delete(`/api/project/${projectId}/members/${assignmentId}`),
 };
+
+function useMemberMutation(mutationFn) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn,
+    onSuccess: () => qc.invalidateQueries({ queryKey: projectKeys.all }),
+  });
+}
+
+export const useAddProjectMember = (projectId) =>
+  useMemberMutation((body) => projectService.addMember(projectId, body));

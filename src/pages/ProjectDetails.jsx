@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import ProjectDetailToolbar from "../components/projectDetail/ProjectDetailToolbar";
 import ProjectHeaderSection from "../components/projectDetail/ProjectHeaderSection";
 import ProjectGeneralContent from "../components/projectDetail/ProjectGeneralContent";
 import ProjectTeamContent from "../components/projectDetail/ProjectTeamContent";
+import AddProjectMemberModal from "../components/projectDetail/AddProjectMemberModal";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useProject } from "@/hooks/useProject";
+import { isFormerMember } from "@/utils/project";
 
-const TAB_VALUES = ["general", "timeline", "documents", "team"];
+const TAB_VALUES = ["general", "team"];
 
 const triggerClass = [
   "h-auto flex-none px-3 py-3.5 focus-visible:ring-inset",
@@ -14,15 +17,8 @@ const triggerClass = [
   "data-active:text-blue-600 dark:data-active:text-zinc-100 cursor-pointer",
 ].join(" ");
 
-function ComingSoon({ label }) {
-  return (
-    <div className="rounded-xl border p-8 text-center text-sm text-muted-foreground">
-      {label} is not available yet.
-    </div>
-  );
-}
-
 function ProjectDetails() {
+  const [addOpen, setAddOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: project, isPending, isError } = useProject(id);
@@ -46,6 +42,8 @@ function ProjectDetails() {
   if (isError) return <p className="p-4">Failed to load project.</p>;
 
   const members = project.members ?? [];
+  const currentMembers = members.filter((m) => !isFormerMember(m));
+  const currentIds = new Set(currentMembers.map((m) => m.employeeId));
 
   const tabs = [
     {
@@ -54,28 +52,19 @@ function ProjectDetails() {
       content: <ProjectGeneralContent project={project} />,
     },
     {
-      value: "timeline",
-      label: "Timeline & Budget",
-      content: <ComingSoon label="Timeline & Budget" />,
-    },
-    {
-      value: "documents",
-      label: "Documents",
-      content: <ComingSoon label="Documents" />,
-    },
-    {
       value: "team",
       label: "Team Members",
-      count: members.length,
+      count: currentMembers.length,
       content: <ProjectTeamContent members={members} />,
     },
   ];
-  console.log(project);
+
   return (
     <>
       <ProjectDetailToolbar
         onExport={() => {}}
         onManageTeam={() => handleTabChange("team")}
+        onAddMember={() => setAddOpen(true)}
         onEdit={() => navigate(`/project/${id}/edit`)}
       />
 
@@ -108,6 +97,14 @@ function ProjectDetails() {
           ))}
         </Tabs>
       </div>
+
+      {addOpen && (
+        <AddProjectMemberModal
+          projectId={project.id}
+          excludeIds={currentIds}
+          onClose={() => setAddOpen(false)}
+        />
+      )}
     </>
   );
 }

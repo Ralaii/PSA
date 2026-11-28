@@ -3,19 +3,22 @@ package com.example.psa.service;
 import com.example.psa.dto.pdf.CoeModel;
 import com.example.psa.dto.pdf.CoeProjectLine;
 import com.example.psa.dto.pdf.CoeRequest;
+import com.example.psa.dto.request.AddProjectMemberRequest;
 import com.example.psa.entity.Employee;
+import com.example.psa.entity.Project;
+import com.example.psa.entity.ProjectAssignment;
 import com.example.psa.pdf.CoeLogoResolver;
 import com.example.psa.pdf.PdfRenderer;
 import com.example.psa.repository.EmployeeRepository;
 import com.example.psa.repository.HrRepository;
+import com.example.psa.repository.ProjectRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,6 +29,35 @@ public class HrService {
     private final HrRepository hrRepository;
     private final PdfRenderer pdfRenderer;
     private final CoeLogoResolver logoResolver;
+    private final ProjectRepository projectRepository;
+
+//  ADD PROJECT MEMBER TO AN EXISTING PROJECT
+    @Transactional
+    public void addProjectMember(UUID projectId, AddProjectMemberRequest request) {
+        if (request.employeeId() == null) {
+            throw new IllegalArgumentException("Employee is required");
+        }
+
+        LocalDate startDate = request.startDate() == null
+                ? LocalDate.now()
+                : request.startDate();
+
+        Optional<Employee> employeeOpt = employeeRepository.findById(request.employeeId());
+        Optional<Project> projectOpt = projectRepository.findById(projectId);
+
+        if (employeeOpt.isEmpty() || projectOpt.isEmpty()) {
+            List<String> missing = new ArrayList<>();
+            if (employeeOpt.isEmpty()) missing.add("Employee not found: " + request.employeeId());
+            if (projectOpt.isEmpty()) missing.add("Project not found: " + projectId);
+            throw new EntityNotFoundException(String.join("; ", missing));
+        }
+
+        ProjectAssignment pa = request.toEntity();
+        pa.setEmployee(employeeOpt.get());
+        pa.setProject(projectOpt.get());
+        pa.setStartDate(startDate);
+        hrRepository.save(pa);
+    }
 
     @Transactional(readOnly = true)
     public byte[] generateCoePdf(String employeeNumber, CoeRequest request) {

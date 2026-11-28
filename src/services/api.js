@@ -5,6 +5,8 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
   withXSRFToken: true,
+  xsrfCookieName: "XSRF-TOKEN",
+  xsrfHeaderName: "X-XSRF-TOKEN",
   timeout: 5000
 });
 

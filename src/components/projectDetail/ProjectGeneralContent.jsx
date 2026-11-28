@@ -20,9 +20,6 @@ function ProjectGeneralContent({ project }) {
         <Field label="Project Name">{project.name}</Field>
         <Field label="Start Date">{formatDate(project.startDate)}</Field>
         <Field label="Target End Date">{formatDate(project.endDate)}</Field>
-        <Field label="Description" className="md:col-span-2">
-          {project.description || "—"}
-        </Field>
       </dl>
     </section>
   );
