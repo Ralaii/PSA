@@ -83,7 +83,8 @@ const tabs = [
         employeeNumber={employee.employeeNumber}
       />
 
-      <EmployeeHeaderSection employee={employee} />
+      <div className="mx-4 mt-4">
+        <EmployeeHeaderSection employee={employee} />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
           <TabsList
@@ -110,6 +111,7 @@ const tabs = [
             </TabsContent>
           ))}
         </Tabs>
+      </div>
     </>
   );
 }

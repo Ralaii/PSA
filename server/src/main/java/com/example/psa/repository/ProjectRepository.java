@@ -59,10 +59,14 @@ public interface ProjectRepository extends JpaRepository<Project, UUID> {
 
     @Query("""
     select new com.example.psa.dto.response.project.ProjectMemberResponse(
+        pa.id,
         e.id,
         pa.projectEmployeeNum,
         concat(e.firstName, ' ', e.lastName),
-        pa.projectPosition)
+        pa.projectPosition,
+        pa.startDate,
+        pa.endDate
+        )
     from ProjectAssignment pa
     join pa.employee e
     where pa.project.id = :projectId

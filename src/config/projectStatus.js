@@ -10,7 +10,7 @@ export const STATUS_STYLES = {
 export const STATUS_LABEL = {
   PLANNING: "Planning",
   PENDING: "Pending",
-  IN_PROGRESS: "In progress",
+  IN_PROGRESS: "Ongoing",
   ON_HOLD: "On hold",
   COMPLETED: "Completed",
   CANCELLED: "Cancelled",
