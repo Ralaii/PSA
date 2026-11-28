@@ -43,11 +43,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
         return Bucket.builder().addLimit(limit).build();
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest req) {
-        String path = req.getServletPath();
-        return path.equals("/api/auth/login") || path.equals("/api/auth/register");
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -57,7 +52,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         String ip = request.getRemoteAddr();
 
-        boolean strict = STRICT_PATHS.contains(request.getRequestURI());
+        boolean strict = STRICT_PATHS.contains(request.getServletPath());
         Bucket bucket = strict
                 ? authBuckets.get(ip, k -> createBucket(AUTH_LIMIT_PER_MINUTE))
                 : generalBuckets.get(ip, k -> createBucket(GENERAL_LIMIT_PER_MINUTE));

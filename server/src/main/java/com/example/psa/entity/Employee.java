@@ -1,8 +1,8 @@
 package com.example.psa.entity;
 
 import com.example.psa.enums.CivilStatus;
+import com.example.psa.enums.EmploymentCategory;
 import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,8 +69,8 @@ public class Employee {
     @Column(name = "philhealth_number")
     private String philhealthNum;
 
-    @Column(name = "phylsis_number")
-    private String philsisNum;
+    @Column(name = "philsys_number")
+    private String philsysNum;
 
     @Column(name = "tin_number")
     private String tinNum;
@@ -92,8 +92,14 @@ public class Employee {
     private EmploymentStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "employment_type", nullable = false)
-    private EmploymentType employmentType;
+    @Column(name = "employment_category", nullable = false)
+    private EmploymentCategory employmentCategory = EmploymentCategory.CONTRACTUAL;
+
+    @Column(name = "contract_start_date")
+    private LocalDate contractStartDate;
+
+    @Column(name = "contract_end_date")
+    private LocalDate contractEndDate;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmployeeAddress> addresses = new ArrayList<>();

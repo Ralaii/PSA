@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response.common;
+package com.example.psa.dto.response.common;
 
 public record ApiErrorResponse(
         int status,

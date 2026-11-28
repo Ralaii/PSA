@@ -1,9 +1,9 @@
 package com.example.psa.service;
 
-import com.example.psa.dto.Response.employee.EmployeeDetailResponse;
-import com.example.psa.dto.Response.employee.EmployeeListResponse;
-import com.example.psa.dto.Response.common.PageResponse;
-import com.example.psa.dto.Response.search.EmployeeSearchResponse;
+import com.example.psa.dto.response.employee.EmployeeDetailResponse;
+import com.example.psa.dto.response.employee.EmployeeListResponse;
+import com.example.psa.dto.response.common.PageResponse;
+import com.example.psa.dto.response.search.EmployeeSearchResponse;
 import com.example.psa.entity.Employee;
 import com.example.psa.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -70,11 +70,10 @@ public class EmployeeService {
         return employeeRepository.search(term, PageRequest.of(0, size));
     }
 
-//  HELPER & FALLBACK METHOD (DB CALL) FOR getEmployees
+//  HELPER & FALLBACK METHOD (DB CALL) FOR getEmployeesListing
     private PageResponse<EmployeeListResponse> fetchEmployeesListFromDb(Pageable pageable) {
         return PageResponse.from(
-                employeeRepository.findAll(pageable)
-                        .map(EmployeeListResponse::from)
+                employeeRepository.findAllEmployeeList(pageable)
         );
     }
 }

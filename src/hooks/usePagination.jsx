@@ -33,6 +33,7 @@ export function usePagination(
   return {
     pageItems: isServer ? list : list.slice(start, end),
     page: currentPage,
+    total,
     totalPages,
     start,
     end,

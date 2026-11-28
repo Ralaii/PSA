@@ -1,3 +1,4 @@
+import { Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -10,9 +11,9 @@ import { IoMdDownload } from "react-icons/io";
 const MENU_HEIGHT = 130;
 
 const itemClass =
-  "flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800";
+  "flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-black transition hover:bg-zinc-300 dark:text-zinc-200 dark:hover:bg-zinc-800";
 
-function EmployeeRowActions({ employee, onEdit, onDelete, onView }) {
+function EmployeeRowActions({ employee, onEdit, onView, onPreviewCoe }) {
   const [pos, setPos] = useState(null); // null = closed
   const btnRef = useRef(null);
   const menuRef = useRef(null);
@@ -78,19 +79,31 @@ function EmployeeRowActions({ employee, onEdit, onDelete, onView }) {
             style={{ top: pos.top, right: pos.right }}
             className="fixed z-50 w-40 overflow-hidden rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
           >
-            <button type="button" role="menuitem" className={itemClass} onClick={run(onView)}>
-              <BsInfoCircle /> View details
-            </button>
-            <button type="button" role="menuitem" className={itemClass} onClick={run(onEdit)}>
-              <BsPencil /> Edit
-            </button>
-            <button
-              type="button"
-              role="menuitem"
-              className={`${itemClass} text-red-600 dark:text-red-400`}
-              onClick={run(onDelete)}
+            <button 
+              type="button" 
+              role="menuitem" 
+              className={itemClass} 
+              onClick={run(onView)}
             >
-              <IoMdDownload /> Download COE
+              View details
+            </button>
+
+            <button 
+              type="button" 
+              role="menuitem" 
+              className={itemClass} 
+              onClick={run(onEdit)}
+            >
+              Edit
+            </button>
+
+            <button 
+              type="button" 
+              role="menuitem" 
+              className={itemClass}
+              onClick={run(onPreviewCoe)} 
+            >
+              Generate CoE
             </button>
           </div>,
           document.body

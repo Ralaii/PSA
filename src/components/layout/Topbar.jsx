@@ -8,11 +8,11 @@ import TopbarSearchInput from "../search/TopbarSearchInput";
 import useTheme from "../../hooks/useTheme";
 import { useTopbarSearch } from "../../hooks/search/useTopbarSearch";
 import { useMe } from "../../hooks/useMe";
+import UserMenu from "../topbar/UserMenu";
+import useAuth from "@/hooks/useAuth";
 
 const iconBtn =
   "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-900 transition hover:bg-zinc-300 dark:text-zinc-100 dark:hover:bg-zinc-800";
-
-  const formatRole = (role = "") => role.charAt(0) + role.slice(1).toLocaleLowerCase().replace(/_/g, " ");
 
 function Topbar({ onMenuClick }) {
   const { pathname } = useLocation();
@@ -23,7 +23,7 @@ function Topbar({ onMenuClick }) {
   const search = useTopbarSearch();
 
   const { data: me} = useMe();
-  const getInitials = (name = "") => name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase() || "?";
+  const { logout, isLoggingOut} = useAuth();
 
   return (
     <header className="shrink-0 border-b border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900">
@@ -61,7 +61,7 @@ function Topbar({ onMenuClick }) {
             <BsSearch />
           </button>
 
-          <NotificationDropdown className={iconBtn} />
+          {/* <NotificationDropdown className={iconBtn} /> */}
 
           <button
             type="button"
@@ -73,17 +73,17 @@ function Topbar({ onMenuClick }) {
           </button>
 
           {/* Profile: avatar always, name only on lg+ */}
-          <div className="ml-1 flex items-center gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-300 text-sm font-medium dark:bg-zinc-700">
-              {getInitials(me?.name)}
-            </div>
-            <div className="hidden leading-tight lg:block">
-              <p className="text-sm font-medium">{me?.name}</p>
-              <p className="text-xs text-zinc-500">{formatRole(me?.role)}</p>
-            </div>
-          </div>
+          <UserMenu 
+            user={me} 
+            key={me?.id}
+            logout={logout}
+            isLoggingOut={isLoggingOut}
+          />
         </div>
       </div>
+      {
+        
+      }
 
       {/* Mobile search row */}
       {searchOpen && (

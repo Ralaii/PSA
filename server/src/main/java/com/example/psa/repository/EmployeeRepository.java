@@ -1,10 +1,10 @@
 package com.example.psa.repository;
 
-import com.example.psa.dto.Response.search.EmployeeSearchResponse;
+import com.example.psa.dto.response.employee.EmployeeListResponse;
+import com.example.psa.dto.response.search.EmployeeSearchResponse;
 import com.example.psa.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,14 +29,20 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 """)
     Optional<Employee> findDetailsById(@Param("id") UUID id);
 
-    @EntityGraph(attributePaths = {"branch", "position"})
-    Page<Employee> findAll(Pageable pageable);
+    @Query("""
+            select new com.example.psa.dto.response.employee.EmployeeListResponse(
+                        e.id, e.employeeNumber, concat(e.firstName, ' ', e.lastName), e.email, ep.name, e.department, e.phoneNum
+                        )
+            from Employee e
+            join e.position ep
+            """)
+    Page<EmployeeListResponse> findAllEmployeeList(Pageable pageable);
 
     boolean existsByEmployeeNumber(String employeeNumber);
     boolean existsByEmail(String email);
 
     @Query("""
-    select new com.example.psa.dto.Response.search.EmployeeSearchResponse(
+    select new com.example.psa.dto.response.search.EmployeeSearchResponse(
         e.id, e.employeeNumber, concat(e.firstName, ' ', e.lastName), e.email, p.name
     )
     from Employee e
@@ -56,4 +62,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     or lower (e.email) like lower(concat('%', :q, '%'))
 """)
     Page<Employee> searchPage(@Param("q") String q, Pageable pageable);
+
+    Optional<Employee> findByEmployeeNumber(String employeeNumber);
 }

@@ -6,6 +6,7 @@ import { useQueryParams } from "../hooks/useQueryParams";
 import { useEmployees } from "../hooks/useEmployees";
 import EmployeeList from "../components/employee/EmployeeList";
 import { useLocation, useNavigate } from "react-router";
+import CoeInput from "@/components/layout/CoeInput";
 
 const PAGE_SIZE = 25;
 const FILTER_DEFAULTS = { q: "" };
@@ -40,6 +41,18 @@ function Employee() {
 
   const toggleAll = () => allSelected ? selection.clear() : selection.setAll(visible.map((e) => e.id));
 
+  const [coeOpen, setCoeOpen] = useState(false)
+  const [coeEmployee, setCoeEmployee] = useState(null)
+  const selectedEmployee = selection.size === 1 ? visible.find((e) => selection.selected.has(e.id)) : null;
+
+  const openCoe = (employee) => {
+    if (!employee?.employeeNumber) return;
+    setCoeEmployee(employee);
+    setCoeOpen(true);
+  }
+
+  const detailEmployee = (e) => `/employee/${e.id}${search}`;
+
   return (
     <div>
       <EmployeeToolbar
@@ -48,8 +61,10 @@ function Employee() {
         onNext={pager.next}
         allSelected={allSelected}
         someSelected={someSelected}
+        selectedCount={selection.size}
         canSelect={visible.length > 0}
         onToggleAll={toggleAll}
+        onPreviewCoe={() => selectedEmployee && openCoe(selectedEmployee)}
       />
 
       <div className="mx-auto max-w-6xl space-y-4 pt-6">
@@ -60,8 +75,19 @@ function Employee() {
           selected={selection.selected}
           onToggleSelect={selection.toggle}
           onView={goToDetail}
+          onPreviewCoe={openCoe}
+          detailEmployee={detailEmployee}
         />
       </div>
+      {
+        coeEmployee && (
+          <CoeInput
+            open={coeOpen}
+            onOpenChange={setCoeOpen}
+            employeeNumber={coeEmployee.employeeNumber}
+          />
+        )
+      }
     </div>
   );
 }

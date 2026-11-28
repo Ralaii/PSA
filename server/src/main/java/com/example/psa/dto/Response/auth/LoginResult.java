@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response.auth;
+package com.example.psa.dto.response.auth;
 
 public record LoginResult(
         String jwt,

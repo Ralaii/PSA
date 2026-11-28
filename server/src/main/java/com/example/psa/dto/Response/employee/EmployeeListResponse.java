@@ -1,8 +1,6 @@
-package com.example.psa.dto.Response.employee;
+package com.example.psa.dto.response.employee;
 
 import com.example.psa.entity.Employee;
-import com.example.psa.enums.EmploymentStatus;
-import com.example.psa.enums.EmploymentType;
 
 import java.util.UUID;
 
@@ -13,10 +11,7 @@ public record EmployeeListResponse(
         String email,
         String position,
         String department,
-        String phoneNum,
-        String branch,
-        EmploymentStatus status,
-        EmploymentType employmentType
+        String phoneNum
 ) {
     public static EmployeeListResponse from(Employee e) {
         String name = e.getFirstName() + " " + e.getLastName() + (e.getMiddleName() != null ? " " + e.getMiddleName() : "");
@@ -27,10 +22,7 @@ public record EmployeeListResponse(
                 e.getEmail(),
                 e.getPosition().getName(),
                 e.getDepartment(),
-                e.getPhoneNum(),
-                e.getBranch() != null ? e.getBranch().getName() : null,
-                e.getStatus(),
-                e.getEmploymentType()
+                e.getPhoneNum()
         );
     }
 }

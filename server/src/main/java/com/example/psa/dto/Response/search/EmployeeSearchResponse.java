@@ -1,4 +1,4 @@
-package com.example.psa.dto.Response.search;
+package com.example.psa.dto.response.search;
 
 import java.util.UUID;
 

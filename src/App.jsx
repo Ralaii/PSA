@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import MainLayout from "./components/layout/MainLayout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,7 +12,9 @@ import Settings from "./pages/Settings";
 import EmployeeDetail from "./pages/EmployeeDetail";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import GuestRoute from "./components/layout/GuestRoute";
-import Home from "./pages/Home";
+import Project from "./pages/Project";
+import ProjectDetails from "./pages/ProjectDetails";
+
 
 function App() {
   return(
@@ -27,15 +29,16 @@ function App() {
           </Route>
         </Route>
 
-        {/* NOT FOUND ROUTE STILL DECIDING WHAT TO DO */}
 
-          <Route path="/" element={<Home/>}/>
+      <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
 
         {/* MAIN ROUTES OF THE LOGIN */}
-        <Route element={<ProtectedRoute/>}>
+        <Route element={<ProtectedRoute roles={['HR', 'ADMIN', 'USER']}/>}>
           <Route element={<MainLayout/>}>
         
             <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/project" element={<Project/>}/>   
+            <Route path="/project/:id" element={<ProjectDetails />} />         
   {/* 
             <Route path="/inbox" element={<Inbox/>}/>
             <Route path="/inbox/:id" element={<InboxDetail/>}/> */}
@@ -53,6 +56,8 @@ function App() {
 
           </Route>
         </Route>
+        
+        {/* NOT FOUND ROUTE STILL DECIDING WHAT TO DO */}
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>

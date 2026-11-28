@@ -1,20 +1,20 @@
 package com.example.psa.service;
 
-import com.example.psa.dto.Response.common.PageResponse;
-import com.example.psa.dto.Response.project.ProjectDetailResponse;
-import com.example.psa.dto.Response.project.ProjectListResponse;
-import com.example.psa.dto.Response.project.ProjectMemberResponse;
-import com.example.psa.dto.Response.search.ProjectSearchResponse;
+import com.example.psa.dto.response.common.PageResponse;
+import com.example.psa.dto.response.project.*;
+import com.example.psa.dto.response.search.ProjectSearchResponse;
 import com.example.psa.entity.Project;
+import com.example.psa.enums.ProjectStatus;
 import com.example.psa.repository.ProjectRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.type.TypeReference;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
@@ -35,14 +35,39 @@ public class ProjectService {
     }
 
 //  FETCH PROJECTS LISTS
-    public PageResponse<ProjectListResponse> getProjectLists(Pageable pageable) {
-        String key = pageable.getPageNumber() + ":"  + pageable.getPageSize() + ":"  + pageable.getSort();
-        return redisCache.getOrLoad(
-                "projectList",
-                key,
-                new TypeReference<PageResponse<ProjectListResponse>>() {},
-                Duration.ofHours(1),
-                () -> findProjectList(pageable)
+    public ProjectPageResponse getProjectLists(String q, ProjectStatus status, Pageable pageable) {
+        String term = (q == null) ? "" : q.trim();
+
+        PageResponse<ProjectListResponse> projects;
+
+        if (!term.isEmpty()) {
+            projects = searchProjectsFromDb(term, status, pageable);
+        } else {
+            String key = (status == null ? "ALL" : status.name())
+                    + ":" + pageable.getPageNumber()
+                    + ":" + pageable.getPageSize()
+                    + ":" + pageable.getSort();
+
+            redisCache.getOrLoad(
+                    "projectList",
+                    key,
+                    new TypeReference<PageResponse<ProjectListResponse>>() {},
+                    Duration.ofHours(1),
+                    () -> fetchProjectsFromDb(status, pageable)
+            );
+
+            projects =  fetchProjectsFromDb(status, pageable);
+        }
+        List<ProjectStatusResponse> counts = fetchProjectCounts();
+        return new ProjectPageResponse(projects, counts);
+    }
+
+    private PageResponse<ProjectListResponse> searchProjectsFromDb(String term, ProjectStatus status, Pageable pageable) {
+        Page<Project> page = (status == null)
+                ? projectRepository.searchProjectPage(term, pageable)
+                : projectRepository.searchProjectPageByStatus(term, status, pageable);
+        return PageResponse.from(
+                page.map(ProjectListResponse::from)
         );
     }
 
@@ -58,10 +83,21 @@ public class ProjectService {
     }
 
 //  HELPER METHOD FOR PROJECT LISTS
-    private PageResponse<ProjectListResponse> findProjectList(Pageable pageable) {
-        return PageResponse.from(
-                projectRepository.findAll(pageable)
-                        .map(ProjectListResponse::from)
-        );
+    private PageResponse<ProjectListResponse> fetchProjectsFromDb(ProjectStatus status,Pageable pageable) {
+        Page<ProjectListResponse> page = (status == null)
+                ? projectRepository.findAllProjectList(pageable)
+                : projectRepository.findProjectListByStatus(status, pageable);
+        return PageResponse.from(page);
+    }
+
+//  HELPER METHOD TO FETCH PROJECT STATUSES COUNT FOR LISTING
+    private List<ProjectStatusResponse> fetchProjectCounts() {
+        return projectRepository.countProjectByStatus()
+                .stream()
+                .map(row -> ProjectStatusResponse.of(
+                        (ProjectStatus) row[0],
+                        (Long) row[1]
+                ))
+                .toList();
     }
 }
