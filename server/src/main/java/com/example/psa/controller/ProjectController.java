@@ -1,8 +1,7 @@
 package com.example.psa.controller;
 
-import com.example.psa.dto.response.common.PageResponse;
 import com.example.psa.dto.response.project.ProjectDetailResponse;
-import com.example.psa.dto.response.project.ProjectListResponse;
+import com.example.psa.dto.response.project.ProjectPageResponse;
 import com.example.psa.dto.response.search.ProjectSearchResponse;
 import com.example.psa.enums.ProjectStatus;
 import com.example.psa.service.ProjectService;
@@ -21,7 +20,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping
-    public PageResponse<ProjectListResponse> getProjectList(
+    public ProjectPageResponse getProjectList(
             @RequestParam(required = false) ProjectStatus projectStatus,
             @RequestParam(required = false) String q,
             @PageableDefault(size = 25, sort = "projectNumber") Pageable pageable){

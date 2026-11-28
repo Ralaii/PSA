@@ -22,15 +22,20 @@ function Project() {
     projectStatus: tab === "ALL" ? undefined : tab,
   });
 
-  const projects = data?.content ?? [];
+  const projects = data?.projects?.content ?? [];
 
   const pager = usePagination(projects, PAGE_SIZE, {
-    resetKey: `${resetKey}|${tab}`, // go back to page 0 when q or tab changes
+    resetKey: `${resetKey}|${tab}`,
     page,
     setPage,
-    serverTotal: data?.totalElements ?? 0,
+    serverTotal: data?.projects?.totalElements ?? 0,
   });
 
+  const statusCounts = useMemo(() => {
+  return Object.fromEntries(
+    (data?.counts ?? []).map(({ status, count }) => [status, count])
+  );
+}, [data?.counts]);
   return (
     <>
       <ProjectToolbar
@@ -46,11 +51,12 @@ function Project() {
             {STATUS_TABS.map((t) => (
               <TabsTrigger key={t.value} value={t.value} className="flex-none px-3">
                 {t.label}
-                {t.value === tab && (
-                  <span className="text-xs text-muted-foreground">
-                    {data?.totalElements ?? 0}
-                  </span>
-                )}
+
+                <span className="text-xs text-muted-foreground">
+                  {t.value === "ALL"
+                    ? data?.projects?.totalElements ?? 0
+                    : statusCounts[t.value] ?? 0}
+                </span>
               </TabsTrigger>
             ))}
           </TabsList>

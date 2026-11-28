@@ -1,9 +1,7 @@
 package com.example.psa.service;
 
 import com.example.psa.dto.response.common.PageResponse;
-import com.example.psa.dto.response.project.ProjectDetailResponse;
-import com.example.psa.dto.response.project.ProjectListResponse;
-import com.example.psa.dto.response.project.ProjectMemberResponse;
+import com.example.psa.dto.response.project.*;
 import com.example.psa.dto.response.search.ProjectSearchResponse;
 import com.example.psa.entity.Project;
 import com.example.psa.enums.ProjectStatus;
@@ -37,25 +35,31 @@ public class ProjectService {
     }
 
 //  FETCH PROJECTS LISTS
-    public PageResponse<ProjectListResponse> getProjectLists(String q, ProjectStatus status,Pageable pageable) {
+    public ProjectPageResponse getProjectLists(String q, ProjectStatus status, Pageable pageable) {
         String term = (q == null) ? "" : q.trim();
 
+        PageResponse<ProjectListResponse> projects;
+
         if (!term.isEmpty()) {
-            return searchProjectsFromDb(term, status, pageable);
+            projects = searchProjectsFromDb(term, status, pageable);
+        } else {
+            String key = (status == null ? "ALL" : status.name())
+                    + ":" + pageable.getPageNumber()
+                    + ":" + pageable.getPageSize()
+                    + ":" + pageable.getSort();
+
+            redisCache.getOrLoad(
+                    "projectList",
+                    key,
+                    new TypeReference<PageResponse<ProjectListResponse>>() {},
+                    Duration.ofHours(1),
+                    () -> fetchProjectsFromDb(status, pageable)
+            );
+
+            projects =  fetchProjectsFromDb(status, pageable);
         }
-
-        String key = (status == null ? "ALL" : status.name())
-                + ":" + pageable.getPageNumber()
-                + ":" + pageable.getPageSize()
-                + ":" + pageable.getSort();
-
-        return redisCache.getOrLoad(
-                "projectList",
-                key,
-                new TypeReference<PageResponse<ProjectListResponse>>() {},
-                Duration.ofHours(1),
-                () -> fetchProjectsFromDb(status, pageable)
-        );
+        List<ProjectStatusResponse> counts = fetchProjectCounts();
+        return new ProjectPageResponse(projects, counts);
     }
 
     private PageResponse<ProjectListResponse> searchProjectsFromDb(String term, ProjectStatus status, Pageable pageable) {
@@ -84,5 +88,16 @@ public class ProjectService {
                 ? projectRepository.findAllProjectList(pageable)
                 : projectRepository.findProjectListByStatus(status, pageable);
         return PageResponse.from(page);
+    }
+
+//  HELPER METHOD TO FETCH PROJECT STATUSES COUNT FOR LISTING
+    private List<ProjectStatusResponse> fetchProjectCounts() {
+        return projectRepository.countProjectByStatus()
+                .stream()
+                .map(row -> ProjectStatusResponse.of(
+                        (ProjectStatus) row[0],
+                        (Long) row[1]
+                ))
+                .toList();
     }
 }

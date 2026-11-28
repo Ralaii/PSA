@@ -80,4 +80,11 @@ public interface ProjectRepository extends JpaRepository<Project, UUID> {
     order by p.name, p.projectNumber
 """)
     List<ProjectSearchResponse> search(@Param("q") String q, Pageable pageable);
+
+    @Query("""
+    select p.status, count(p)
+    from Project p
+    group by p.status
+""")
+    List<Object[]> countProjectByStatus();
 }
